@@ -1,0 +1,62 @@
+{
+  "status": "PROPOSAL_ONLY_REQUIRES_APPROVAL",
+  "userDecision": {
+    "historical52MDepartmentConfirmed": false,
+    "historicalDepartment": null,
+    "budgetCreationApproved": false,
+    "historicalMigrationApproved": false,
+    "instruction": "Prepare only. Do not assign the historical 52M to IT or change historical data."
+  },
+  "observedDate": "2026-11-24",
+  "purpose": "Recruiter-facing FlowRequest Demo; no automatic database writes",
+  "observed": {
+    "department": "IT",
+    "pendingAccountingPurchases": 3,
+    "pendingAccountingAmount": 100000000,
+    "unassignedHistoricalApprovedAmount": 52000000,
+    "unassignedHistoricalPaidAmount": 52000000
+  },
+  "proposedBudget": {
+    "departmentName": "IT",
+    "code": "IT",
+    "allocatedAmount": 1000000000,
+    "currency": "VND",
+    "openingCommittedAmount": null,
+    "requiresExplicitDataApproval": true
+  },
+  "openingBalanceChoicesForReview": [
+    {
+      "amount": 52000000,
+      "condition": "Only if the user confirms the historical 52M belongs to IT and approves a reconciled opening balance. It does not authorize edits to the original request or payment.",
+      "availableBeforePending": 948000000,
+      "availableAfterCurrentPendingIfApproved": 848000000
+    },
+    {
+      "amount": 0,
+      "condition": "Only if the user explicitly defines this as a new Demo allocation excluding the historical 52M. Historical commitment remains separately disclosed; this is not a full historical reconciliation.",
+      "availableBeforePending": 1000000000,
+      "availableAfterCurrentPendingIfApproved": 900000000
+    }
+  ],
+  "historicalPolicy": {
+    "changeOriginal52MAmount": false,
+    "reapproveOriginalRequest": false,
+    "recreateOriginalPayment": false,
+    "automaticallyLinkHistoricalDepartment": false,
+    "note": "Historical department linkage is a separate approval and migration decision; it is not performed by this proposal."
+  },
+  "applicationPlan": {
+    "phase1": "Confirm allocation and opening commitment explicitly; null is not zero. Do not create a budget until approved.",
+    "phase2": "After approval, Accountant uses existing finance/budgets API/UI. Opening commitment is recorded once; no payment or historical approval is replayed.",
+    "phase3": "If historical linkage is later confirmed and separately approved, reconcile request and payment departments together with backup and audit. An opening commitment already included must not be incremented again.",
+    "verification": "Read-only budget review must reject unassigned purchase payments and mismatched request/payment departments, even when the request itself has been linked.",
+    "currentLimitation": "Historical 52M remains disclosed as unassigned; this proposal does not claim complete historical reconciliation or public readiness."
+  },
+  "demonstrationScenariosOnIsolatedTestDatabase": [
+    { "amount": 49000000, "approvalOrder": ["MANAGER", "ACCOUNTANT"] },
+    { "amount": 50000000, "approvalOrder": ["MANAGER", "DIRECTOR", "ACCOUNTANT"] },
+    { "approvedAmount": 50000000, "partialPayments": [20000000, 30000000], "expectedBudgetCommitment": 50000000 },
+    { "additionalPaymentAfterFullPayment": 1, "expected": "REJECTED" }
+  ],
+  "otherDepartments": "Use only existing department names and approved amounts. Do not invent departments from role labels or create budgets automatically."
+}

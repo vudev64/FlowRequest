@@ -1,0 +1,154 @@
+FLOWREQUEST DEMO — CÁC BƯỚC ÁP DỤNG SAU AUDIT
+Cập nhật: 24/11/2026. Không phải cấu hình đã được kích hoạt.
+
+1. MONGODB TEST — ĐÃ CHẠY THÀNH CÔNG
+- DB: flowrequest_test, khác DB Demo tên test.
+- Theo xác nhận của người dùng, đã kiểm tra lại 0 bản ghi và xóa duy nhất
+  collection khởi tạo test_init. Không xóa database hay collection khác.
+- npm run test:mongo:safety: 10/10 đạt. npm run test:mongo: 1/1 đạt, không skip.
+- Kiểm tra sau test: 6 collection fixture rỗng; control marker hợp lệ và
+  activeRun=null; không còn thư mục run của test. Giữ lại collection/index/marker.
+- Các lần chạy sau vẫn phải dùng user Test riêng, kiểm tra quyền và dữ liệu trống/
+  marker hợp lệ. Không bỏ whitelist hoặc tự nhận lại dữ liệu/lượt chạy cũ.
+- File mẫu backend/.env.test.example không chứa bí mật. Không chép đè .env.test
+  hiện đã có URI thật. Không cần tự tạo collection/document bằng Compass.
+- Chứng cứ: .backups/demo-five-blockers-20261124/group1-integration.log,
+  group1-cleanup.json và approved-test-init-removal.json.
+
+2. USER MONGODB DEMO — CHỜ NGƯỜI DÙNG TẠO TRÊN ATLAS
+Kiểm tra mới nhất: kết nối Demo hiện còn quyền thao tác dữ liệu ngoài DB Demo.
+Không sửa quyền hoặc xóa user cũ, vì có thể đang phục vụ nơi khác.
+
+Các bước cần chủ dự án Atlas thực hiện:
+1) Chọn đúng project chứa cluster small-business, mở Security → Database &
+   Network Access → Database Users → Add New Database User.
+2) Tạo user riêng, ví dụ flowrequest_demo_app, với mật khẩu mạnh riêng. Đây là
+   database user hạ tầng, không phải tài khoản ứng dụng thuộc 6 role.
+3) Trong Database User Privileges, dùng Specific Privileges: Role readWrite,
+   Database test, Collection để trống. Chỉ quyền trên DB này; không gán thêm
+   Read and write to any database/readWriteAnyDatabase, readAnyDatabase,
+   Atlas admin, dbOwner hoặc quyền DB flowrequest_test/flowrequest_production.
+4) Nếu project có nhiều cluster, giới hạn user vào small-business. Network
+   Access chỉ cho IP máy chủ triển khai cần thiết; không mở rộng IP để lách lỗi.
+5) Lấy connection string từ Connect → Drivers, đặt đường dẫn /test và
+   authSource=admin. URL-encode mật khẩu; không bỏ TLS/xác minh chứng chỉ.
+6) Trên máy hiện tại, Demo đang đọc backend/.env vì chưa có .env.demo. Chỉ
+   thêm/cập nhật DEMO_MONGO_URI bằng URI của user mới và DEMO_DB_NAME=test
+   vào file đang hoạt động. Giữ nguyên JWT, port, storage, dữ liệu và mọi trường
+   Production/Test. Không tạo .env.demo bằng cách copy mẫu còn placeholder:
+   file đó sẽ được ưu tiên hơn .env và có thể làm mất cấu hình đang dùng.
+7) Không gửi URI/mật khẩu vào chat, ảnh chụp hoặc commit. Sau khi điền xong,
+   báo để kiểm tra chỉ đọc user/quyền/identity và dữ liệu trước khi restart.
+
+Việc thêm/cập nhật URI thật và restart là bước chuyển cấu hình riêng, cần xác
+nhận khi đã có user mới. Không tự rotate JWT hoặc seed lại 6 tài khoản.
+Đổi user kết nối không làm thay đổi password/account ứng dụng hoặc dữ liệu.
+Không đánh dấu nhóm này hoàn tất chỉ vì file .example có URI mẫu đúng dạng.
+
+Tài liệu Atlas chính thức:
+https://www.mongodb.com/docs/atlas/security-add-mongodb-users/?auth-method=password&interface-default-atlas-cli=atlas-ui
+
+3. NGÂN SÁCH — PHƯƠNG ÁN CHỜ DUYỆT, KHÔNG GHI DATABASE
+Quan sát hiện tại: IT có 3 đơn mua sắm chờ Accountant tổng 100 triệu; chưa có
+ngân sách phòng ban. Khoản 52 triệu đã duyệt/đã trả chưa xác nhận thuộc IT.
+Giữ nguyên request, payment, chứng từ và số tiền lịch sử.
+
+Đề xuất: hạn mức Demo IT 1 tỷ đồng. Số cam kết ban đầu vẫn để null, không tự
+chọn 0 hoặc 52 triệu. Hai phương án chỉ để người dùng quyết định:
+- Nếu sau này xác nhận 52 triệu thuộc IT: cam kết đầu kỳ 52 triệu; khả dụng
+  trước các đơn chờ là 948 triệu, sau khi duyệt đủ 100 triệu là 848 triệu.
+- Nếu người dùng xác định rõ hạn mức mới tách lịch sử: cam kết đầu kỳ 0;
+  khả dụng 1 tỷ, sau các đơn chờ là 900 triệu. Khoản 52 triệu vẫn phải công bố
+  ở nhóm lịch sử chưa gán; đây chưa phải đối soát lịch sử đầy đủ.
+
+Chưa phương án nào được duyệt hoặc áp dụng. Không sửa dữ liệu để làm báo cáo
+ready=true. Đề xuất cấu trúc và điều kiện nằm ở budget-proposal.json.
+Sau khi được duyệt, dùng chức năng ngân sách Accountant hiện có. Tạo ngân sách
+với cam kết đầu kỳ đúng một lần; không tạo lại payment hoặc duyệt lại đơn cũ.
+Nếu cần liên kết lịch sử, lập bước riêng với backup/audit và đối chiếu cả
+request.department/budgetDepartment lẫn payment.department. Số cam kết đã tính
+trong đầu kỳ không được cộng thêm lần nữa khi gắn lịch sử.
+
+Báo cáo chỉ đọc report:demo-budget đã được bổ sung chốt: không báo đạt khi
+payment mua sắm chưa có phòng ban hoặc khác phòng ban của request, dù request
+đã gắn phòng ban. Không thay đổi API nghiệp vụ, workflow hoặc cách trừ ngân sách.
+
+4. CORS PUBLIC — ĐÃ CÓ MẪU, CHỜ CHỌN HOSTING/DOMAIN
+Người dùng chưa chọn domain/hosting. Không tự điền domain giả vào .env thật,
+không mở wildcard và không kích hoạt cấu hình public trên máy đang chạy Demo.
+File backend/.env.demo.example là mẫu tham khảo, không phải cấu hình đã áp dụng.
+
+Khi có địa chỉ thật, các trường cần được quản trị viên cấu hình:
+- NODE_ENV=production; FLOWREQUEST_ENV=demo; chạy npm run start:demo.
+  Đây vẫn là Demo; không bật PRODUCTION_ENABLED hoặc chạy bootstrap Production.
+- DEMO_ALLOWED_ORIGINS: đúng origin HTTPS của frontend, có thể nhiều origin
+  phân cách dấu phẩy; không có dấu / cuối, path, query hoặc dấu *.
+- DEMO_TRUSTED_PROXIES: IP chính xác của reverse proxy thực tế. Với Nginx mẫu
+  cùng máy, proxy_pass đi 127.0.0.1; chỉ dùng IP tương ứng sau khi xác minh đường
+  kết nối. Không đặt true, số hop tùy ý hoặc tin mọi X-Forwarded-For.
+- Nginx phải ghi đè forwarding headers như mẫu; khi thêm CDN cần kiểm tra lại
+  chuỗi proxy để rate limit nhận đúng IP. Không mở port Backend trực tiếp ra mạng.
+- Frontend Demo gọi /demo-api qua reverse proxy, không dùng localhost:5000 trên
+  trình duyệt khách và không trỏ /api sang Production.
+
+Sau khi được phép cập nhật cấu hình thật:
+  backend: npm run check:demo -- --offline
+  backend: npm run check:demo
+Hai lệnh phải đạt; offline không chứng minh quyền MongoDB. Nếu thiếu origin,
+quyền DB rộng hoặc storage không truy cập được, dừng trước khi khởi chạy public.
+Kiểm thử CORS cô lập đã có thể thực hiện trước khi chọn hosting: origin hợp lệ
+được phản hồi đúng header, origin khác không được CORS cho phép, OPTIONS hoạt
+động và API không token vẫn 401. Điều này chưa xác minh CORS trên domain thật.
+CORS không thay thế xác thực/phân quyền API.
+
+Tài liệu Express về proxy:
+https://expressjs.com/en/guide/behind-proxies/
+
+5. HOSTING/DEPLOY — CHỜ CHỌN HẠ TẦNG, CHƯA KÍCH HOẠT
+Hệ thống hiện cần Node.js chạy lâu dài, MongoDB hỗ trợ transaction và filesystem
+bền vững cho uploads/private-vouchers. Chưa có adapter lưu file object storage;
+không chọn môi trường chỉ có disk tạm rồi coi chứng từ đã được bảo toàn.
+Không chuyển hệ thống sang nền tảng/DB/framework khác để triển khai Demo.
+
+Hai mẫu tham khảo cho mô hình Linux cùng máy (không bắt buộc chọn mô hình này):
+- nginx.conf.example: chỉ phục vụ frontend/dist; /demo-api/ chuyển tới Backend
+  /api/; /health/ready chuyển tới Backend; chặn /api Production và file private.
+  limit_req_zone cần nằm trong ngữ cảnh http; file server được include đúng chỗ.
+- flowrequest-demo.service.example: chạy Node bằng service user riêng,
+  NODE_ENV=production nhưng FLOWREQUEST_ENV=demo; tự restart khi lỗi. Đây chỉ là
+  mẫu systemd, không dùng trên Windows hoặc managed hosting không có systemd.
+  Với ProtectSystem=strict, ReadWritePaths phải đúng storage đã có, tồn tại và
+  service user có quyền. Không chmod rộng hoặc chuyển storage để lách kiểm tra.
+
+Trước khi áp dụng trên host đã chọn:
+1) Chốt domain/frontend origin, API routing, port, IP proxy, service user và
+   đường dẫn volume bền vững. Nếu nhà cung cấp cấp PORT động, cấu hình port
+   theo yêu cầu đó, không giữ DEMO_PORT=5000 nếu làm sai port hosting.
+2) Backup MongoDB Demo và cả uploads/private-vouchers theo quy trình được duyệt.
+   Kiểm tra có thể restore ở môi trường riêng; không dùng restore để đè Demo.
+3) Nếu chuyển máy/storage, xin phép kế hoạch copy, đối chiếu hash và kiểm tra
+   endpoint chứng từ trước/sau. Không tự xóa hoặc đổi thư mục gốc hiện tại.
+4) Đặt secrets bằng cơ chế của host/file riêng không public; chỉ static web root
+   là frontend/dist. Không đưa backend/.env, URI, JWT hoặc private-vouchers lên web.
+5) Cài đúng dependency từ lockfile với Node tương thích bản đang kiểm thử; build
+   Demo bằng npm run build. Giữ VITE_ENABLE_PRODUCTION=false như cấu hình Demo
+   hiện tại. Không dùng Vite dev/preview làm máy chủ public.
+6) Thay mọi placeholder của Nginx/service. Trên host thật, kiểm tra nginx -t và
+   (nếu dùng systemd) systemd-analyze verify trước khi xin phép enable/reload/start.
+7) Chỉ mở 80/443 công khai; Backend ở local/private network. Bật TLS hợp lệ,
+   giới hạn request/disk, log rotation và theo dõi dung lượng chứng từ.
+8) Chạy check:demo đầy đủ, rồi smoke trên domain thật:
+   npm run check:demo-hosting -- --url=https://<domain-demo-thật>
+   Không bỏ xác minh TLS, không truyền URI/mật khẩu qua URL hoặc lệnh kiểm tra.
+9) Kiểm tra online 6 role, workflow 49/50 triệu trên dữ liệu test/fixture được
+   duyệt, chứng từ đúng quyền, responsive, deep link, restart/redeploy và nhiều
+   phiên dùng chung. Không dùng payment 52 triệu cũ để chạy test ghi.
+10) Nếu có lỗi, rollback bản build/cấu hình theo bản đã duyệt, bảo toàn DB/file.
+    Không reset/seed/xóa database để đưa hệ thống về trạng thái chạy được.
+
+ONLINE_CHECKLIST.txt ghi rõ từng điều kiện. Không đánh dấu hosting đạt khi chỉ
+có template hoặc unit test của checker. Hiện chưa có domain nên chưa thể xác
+minh TLS/proxy/storage bền vững, backup/restore, khả năng chịu tải hoặc redeploy.
+
+Tài liệu Nginx chính thức về proxy_pass:
+https://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_pass

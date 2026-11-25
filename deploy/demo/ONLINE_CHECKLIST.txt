@@ -1,0 +1,71 @@
+FLOWREQUEST DEMO — CHECKLIST ONLINE CHO NHÀ TUYỂN DỤNG
+Ngày chuẩn bị: 24/11/2026. Đây là checklist, chưa phải kết quả đã đạt.
+Mỗi mục phải ghi người kiểm tra, thời điểm, URL/build và bằng chứng thực tế.
+
+TRƯỚC KHI DEPLOY
+[ ] User MongoDB Demo chỉ có readWrite trên DB Demo hiện tại; không quyền chéo DB.
+[x] DB/user/storage Test riêng; npm run test:mongo đạt 1/1, không skip (24/11/2026).
+[x] Teardown chỉ dọn fixture lượt chạy, giữ DB/collection/index và nhả khóa;
+    kiểm tra sau test xác nhận 6 collection rỗng và không còn thư mục run.
+    Trước test đã xóa riêng collection test_init rỗng theo phê duyệt người dùng;
+    không có bản ghi bị xóa trong thao tác đó. Chứng cứ tại
+    .backups/demo-five-blockers-20261124/group1-integration.log và group1-cleanup.json.
+[ ] CORS đúng HTTPS origin của frontend; không dùng wildcard và không chứa path.
+[ ] Production vẫn tạm dừng; không có proxy /api trỏ nhầm Production.
+[ ] Ngân sách mẫu được người dùng duyệt; số cam kết ban đầu đã đối soát.
+[ ] Khoản 52 triệu và payment cũ không bị sửa số tiền, duyệt lại hoặc tạo lại.
+[ ] Backup source và backup dữ liệu/file theo quy trình được duyệt.
+[ ] Build/lint/test/audit đạt trong phạm vi yêu cầu; ghi rõ mọi mục còn bỏ qua.
+
+HẠ TẦNG
+[ ] Điền domain/certificate/static root trong nginx.conf.example và chạy nginx -t.
+[ ] Frontend chỉ phục vụ frontend/dist, không phục vụ backend/.env hoặc source.
+[ ] HTTPS/chứng chỉ hợp lệ; HTTP chuyển sang HTTPS theo cấu hình đã duyệt.
+[ ] /demo-api/* tới đúng Backend Demo /api/*; deep link SPA tải lại vẫn hoạt động.
+[ ] Backend port chỉ truy cập từ local/private proxy; 80/443 là cổng public.
+[ ] DEMO_TRUSTED_PROXIES chỉ chứa IP proxy thực; header giả không vượt limiter.
+[ ] Storage riêng/bền vững; uploads/private-vouchers không public trực tiếp.
+[ ] Kiểm tra file còn nguyên sau restart/redeploy; hash chứng từ không đổi.
+[ ] Có quota disk/request, theo dõi lỗi/dung lượng và log rotation.
+[ ] Chạy npm run check:demo và check:demo-hosting -- --url=https://<domain-thật>.
+
+ĐĂNG NHẬP VÀ PHÂN QUYỀN
+[ ] Đủ 6 tài khoản mẫu đăng nhập nhanh và điều hướng đúng workspace.
+[ ] Tài khoản mẫu không bị khóa/reset bởi khách khác; tài khoản mới vẫn quản lý được.
+[ ] Không token nhận 401; token sai môi trường/hết hạn/bị thu hồi bị từ chối.
+[ ] SYSTEM_ADMIN chỉ cấp HR_ADMIN/DIRECTOR; HR_ADMIN cấp EMPLOYEE/MANAGER/ACCOUNTANT.
+[ ] Employee không đọc đơn/tệp của người khác; không tự duyệt hoặc chi cho mình.
+[ ] Manager/Director/HR/Accountant chỉ thao tác đúng loại đơn và bước hiện tại.
+[ ] SYSTEM_ADMIN không được xét duyệt nghiệp vụ.
+
+WORKFLOW VÀ THANH TOÁN
+Chạy thao tác ghi trên DB Test hoặc dữ liệu Demo mới được người dùng duyệt;
+không dùng khoản 52 triệu cũ để thực hiện các bài test dưới đây.
+[ ] Mua sắm dưới 50 triệu: Employee → Manager → Accountant.
+[ ] Mua sắm từ 50 triệu: Employee → Manager → Director → Accountant.
+[ ] Đơn Manager tạo tiếp tục theo workflow Director hiện có.
+[ ] Nghỉ phép/OT/chấm công/đào tạo/tuyển dụng/WFH/công tác giữ đúng routing.
+[ ] Duyệt cuối chỉ cam kết ngân sách một lần; số dư thiếu thì không đổi dữ liệu.
+[ ] Tiền duyệt và thực trả tách biệt, hiển thị nhất quán ở Accountant/Director.
+[ ] Chi từng phần có người thực hiện, ngày và chứng từ; đủ tiền thì chặn chi thêm.
+[ ] Gửi lại cùng idempotency key không tạo payment hoặc audit thanh toán trùng.
+[ ] Hai yêu cầu đồng thời không làm vượt duyệt, âm ngân sách hoặc trừ hai lần.
+[ ] Lỗi ghi ledger/audit rollback transaction; không mất chứng từ đã commit.
+
+UI/UX TRÊN DOMAIN THẬT
+[ ] Kiểm tra desktop/tablet/mobile: 1440/768/390/320px và không tràn ngang.
+[ ] Employee mở chi tiết có tên người duyệt/lịch sử, trạng thái tải/lỗi/thử lại.
+[ ] Tải tệp qua endpoint có token; URL/path ngoài quyền không tải được.
+[ ] Đổi/đóng đơn khi đang tải không hiển thị nhầm dữ liệu của đơn trước.
+[ ] Gõ nhiều ký tự liên tiếp không mất focus ở các form được công bố.
+[ ] Theme/ngôn ngữ theo chức năng hiện tại vẫn hoạt động và giữ lựa chọn như thiết kế.
+[ ] Reload/deep link/logout không để người dùng ở workspace sai role.
+[ ] Biểu đồ Director đủ 12 tháng/năm đúng dữ liệu; không sửa workflow để làm biểu đồ.
+[ ] Trang giới thiệu/login ghi rõ mục đích trải nghiệm Demo, không hứa chuyển tiền thật.
+
+GIỚI HẠN VÀ KẾT LUẬN
+[ ] Kiểm tra tải dự kiến, nhiều phiên dùng chung tài khoản mẫu và giới hạn theo IP.
+[ ] Kiểm tra thông báo lỗi có thể hiểu được, không chứa URI/password/JWT/stack nội bộ.
+[ ] Ghi rõ tính năng chưa hoàn chỉnh (ví dụ sửa/gửi tiếp nháp) trong phạm vi Demo.
+[ ] Chỉ xác nhận public deploy khi mọi điều kiện bắt buộc có bằng chứng; localhost
+    smoke, template, test fixture và npm audit không thay thế kiểm chứng hạ tầng thật.

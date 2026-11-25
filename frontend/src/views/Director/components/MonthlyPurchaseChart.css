@@ -1,0 +1,53 @@
+.dir-monthly-header { align-items: center; gap: 16px; }
+.dir-monthly-header > h2 { flex: 1 1 280px; min-width: 0; line-height: 1.5; }
+.dir-monthly-year-filter { display: inline-flex; align-items: center; gap: 10px; margin-left: auto; flex-shrink: 0; color: var(--dir-muted); font-size: 12px; white-space: nowrap; }
+.dir-workspace .dir-monthly-year-filter .dir-input { width: 104px; min-height: 38px; padding: 7px 10px; font-size: 13px; }
+.dir-monthly-chart {
+  --dir-chart-proposed: #8291ad;
+  --dir-chart-approved: var(--dir-primary-text);
+  margin: 0;
+}
+.dir-workspace[data-theme="dark"] .dir-monthly-chart { --dir-chart-proposed: #667593; }
+.dir-monthly-legend { display: flex; align-items: center; flex-wrap: wrap; gap: 12px 22px; margin-bottom: 24px; color: var(--dir-muted); font-size: 12px; }
+.dir-monthly-legend > span { display: inline-flex; align-items: center; gap: 7px; }
+.dir-monthly-legend small { margin-left: auto; font-size: 11px; }
+.dir-monthly-swatch { display: inline-block; flex: 0 0 9px; width: 9px; height: 9px; border-radius: 2px; }
+.dir-monthly-proposed { background: var(--dir-chart-proposed); }
+.dir-monthly-approved { background: var(--dir-chart-approved); }
+.dir-monthly-stage { position: relative; min-width: 0; container-type: inline-size; }
+.dir-monthly-scroll { overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: thin; padding: 8px 0 2px; }
+.dir-monthly-canvas { position: relative; min-width: 0; padding: 0 8px 34px 58px; }
+.dir-monthly-plot { position: relative; height: 228px; }
+.dir-monthly-grid, .dir-monthly-groups { position: absolute; inset: 0; }
+.dir-monthly-grid { pointer-events: none; }
+.dir-monthly-gridline { position: absolute; left: 0; right: 0; border-top: 1px solid var(--dir-border); }
+.dir-monthly-gridline span { position: absolute; top: 0; right: calc(100% + 12px); transform: translateY(-50%); color: var(--dir-muted); font-size: 11px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.dir-monthly-groups { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 10px; }
+.dir-workspace .dir-monthly-group { display: flex; align-items: flex-end; justify-content: center; gap: 4px; position: relative; min-width: 0; height: 100%; padding: 0 3px; border: 0; border-radius: 3px 3px 0 0; color: var(--dir-muted); background: transparent; }
+.dir-workspace .dir-monthly-group.is-active { background: var(--dir-primary-soft); }
+.dir-workspace .dir-monthly-group:focus-visible { outline-offset: -2px; }
+.dir-monthly-bar { display: block; width: 16px; max-width: 40%; border-radius: 3px 3px 0 0; }
+.dir-monthly-month { position: absolute; top: calc(100% + 10px); left: 50%; transform: translateX(-50%); white-space: nowrap; font-size: 11px; }
+.dir-monthly-compact-month, .dir-monthly-axis-label { display: none; }
+.dir-monthly-tooltip { position: absolute; z-index: 5; top: 12px; left: clamp(8px, var(--dir-tooltip-left), max(8px, calc(100% - 268px))); width: min(260px, calc(100% - 16px)); padding: 13px 15px; border: 1px solid var(--dir-border); border-radius: 8px; background: var(--dir-panel); color: var(--dir-text); box-shadow: 0 5px 18px rgba(9, 17, 39, .12); pointer-events: none; font-size: 12px; }
+.dir-monthly-tooltip > strong { display: block; margin-bottom: 9px; }
+.dir-monthly-tooltip dl { display: grid; gap: 7px; margin: 0; }
+.dir-monthly-tooltip dl > div { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.dir-monthly-tooltip dt { display: flex; align-items: center; gap: 7px; color: var(--dir-muted); }
+.dir-monthly-tooltip dd { margin: 0; max-width: 142px; text-align: right; overflow-wrap: anywhere; font-weight: 600; font-variant-numeric: tabular-nums; }
+.dir-monthly-chart-note { margin: 14px 0 0; font-size: 12px; }
+.dir-chart-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+@container (max-width: 640px) {
+  .dir-monthly-canvas { padding: 0 0 48px 50px; }
+  .dir-monthly-groups { gap: 3px; }
+  .dir-workspace .dir-monthly-group { padding: 0; gap: 2px; }
+  .dir-monthly-gridline span { right: calc(100% + 8px); font-size: 10px; }
+  .dir-monthly-month { font-size: 10px; }
+  .dir-monthly-full-month { display: none; }
+  .dir-monthly-compact-month { display: block; }
+  .dir-monthly-axis-label { display: block; position: absolute; bottom: 0; right: 0; color: var(--dir-muted); font-size: 10px; }
+}
+@media (max-width: 720px) {
+  .dir-monthly-legend { gap: 10px 16px; }
+  .dir-monthly-plot { height: 200px; }
+}

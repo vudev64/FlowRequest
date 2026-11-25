@@ -1,0 +1,73 @@
+FLOWREQUEST — KẾT QUẢ HỖ TRỢ DATABASE TEST
+Ngày: 24/11/2026
+
+PHẠM VI ĐÃ THỰC HIỆN
+- Chấp nhận chính xác flowrequest_test, giữ nguyên quy tắc frft_... cũ.
+- Dùng cùng điều kiện ở kiểm tra cấu hình, nhận lease và dọn bản ghi test.
+- Giữ nguyên kiểm tra URI/DB khớp nhau, user riêng, quyền đúng DB, storage riêng,
+  marker, lease, _testRunId và bcrypt; không thêm fallback sang Demo/Production.
+- Theo xác nhận riêng của người dùng, chỉ thêm /flowrequest_test vào URI Test.
+  Giữ nguyên thông tin kết nối và các giá trị cấu hình còn lại; không sao lưu bí mật.
+- Không thay đổi code ứng dụng, UI, 6 role, workflow hoặc khoản 52 triệu.
+
+FILE TEST/TÀI LIỆU ĐÃ SỬA
+- backend/test/mongo-safety.test.js
+- backend/test/README.md
+- backend/test/support/mongoTestEnvironment.js
+Cấu hình: backend/.env.test (chỉ bổ sung đường dẫn theo xác nhận).
+Code ứng dụng thay đổi so với inventory trước tác vụ: 0 file.
+Backup code trước sửa: .backups/flowrequest-test-name-20261124/*before*
+
+KIỂM THỬ ĐÃ CHẠY LẠI
+- npm run test:mongo:safety: 10/10 đạt,
+  0 lỗi, 0 bỏ qua.
+- Hồi quy mongo-runner/demo-deployment/demo-preflight: 6/6 đạt,
+  0 lỗi, 0 bỏ qua.
+- Bao gồm chặn tên DB gần giống, trùng user/DB đang vận hành, quyền chéo DB,
+  storage chồng lấn, dữ liệu ngoài lượt chạy và marker/lease sai.
+- Kiểm thử cleanup trong bộ nhớ đạt; cleanup trên Atlas chưa được thực thi.
+
+KẾT NỐI ATLAS THẬT — CHỈ ĐỌC
+- Cấu hình Test riêng hợp lệ; URI trỏ flowrequest_test.
+- Kết nối và xác thực thành công; user khớp cấu hình Test.
+- Đọc được quyền hiệu lực bằng connectionStatus.
+- Quyền đã giới hạn trong Test: true.
+- Đủ quyền cần thiết: true.
+- Topology hỗ trợ transaction: true.
+- Bị chặn tại existing-test-data: Có collection không thuộc harness. Giữ nguyên, không ghi hoặc tự xóa.
+- Quyền ngoài phạm vi Test: 0 mục quyền.
+  Không suy diễn tên role cụ thể hoặc quyền truy cập từng DB ngoài phạm vi.
+- Collection hiện có: test_init.
+- Collection ngoài harness: test_init,
+  số bản ghi: 0.
+- Chưa xác minh marker/lease cuối cùng vì dừng tại collection ngoài harness.
+- npm run test:mongo: CHƯA CHẠY. Không coi integration đã đạt.
+- Không kết nối DB Demo/Production, không ghi fixture hoặc marker, không dọn
+  bản ghi trên Atlas, không drop database/collection.
+
+PHẦN CÒN CHẶN VÀ PHƯƠNG ÁN TIẾP THEO
+Quyền Atlas đã được người dùng cập nhật và được xác minh đạt. Không cần thay
+đổi URI hoặc phân quyền thêm theo bằng chứng hiện tại.
+Collection test_init có 0 bản ghi nhưng không thuộc whitelist harness, nên
+kiểm tra an toàn vẫn từ chối. Không sửa whitelist để bỏ qua điều kiện này.
+Giữ nguyên collection, không tự xóa. Cần người dùng xác nhận có thể xóa riêng
+collection rỗng flowrequest_test.test_init, hoặc quản trị viên tự xử lý.
+Nếu được phép xử lý ở bước sau, phải kiểm tra lại đúng DB/user/quyền và xác
+nhận collection vẫn rỗng trước thao tác. Nếu có dữ liệu mới thì dừng, giữ nguyên.
+Sau đó chạy preflight lại, chỉ chạy test:mongo khi mọi điều kiện đều đạt, rồi
+đối soát cleanup các fixture và thư mục riêng của lượt chạy.
+
+Tài liệu Atlas chính thức:
+https://www.mongodb.com/docs/atlas/security-add-mongodb-users/?auth-method=password&interface-default-atlas-cli=atlas-ui
+
+KẾT LUẬN
+Thay đổi bộ test và hồi quy đã đạt. Kết nối, quyền Test và hỗ trợ transaction
+đã được xác minh. Integration còn bị chặn bởi collection test_init ngoài harness.
+Chưa đủ bằng chứng xác nhận Demo sẵn sàng deploy công khai.
+
+CHỨNG CỨ
+.backups/flowrequest-test-name-20261124/safety.log
+.backups/flowrequest-test-name-20261124/regression.log
+.backups/flowrequest-test-name-20261124/preflight-result.json
+.backups/flowrequest-test-name-20261124/uri-path-update.json
+.backups/flowrequest-test-name-20261124/report.json

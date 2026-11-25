@@ -1,0 +1,12 @@
+node_modules/
+.env
+.env.*
+!.env.*.example
+private-vouchers/
+.gridfs-staging/
+.data/
+*.secret
+uploads/
+test-artifacts/
+production-data/
+.secrets/

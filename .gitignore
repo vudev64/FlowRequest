@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Environment
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Sensitive data
+.backups/
+.secrets/
+private-vouchers/
+.gridfs-staging/
+.data/
+production-data/
+uploads/
+test-artifacts/
+*.secret
+
+# Build & logs
+dist/
+build/
+coverage/
+*.log

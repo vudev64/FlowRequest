@@ -1,0 +1,58 @@
+# Bản để duyệt local. Lần Apply Blueprint đầu tiên sẽ tạo dịch vụ tính phí.
+# Dùng repo chứa frontend/ và backend/, đặt region của API gần Atlas trước khi Apply.
+services:
+  - type: web
+    name: flowrequest-demo-api
+    runtime: node
+    plan: starter
+    rootDir: backend
+    buildCommand: npm ci --omit=dev
+    startCommand: npm run start:demo
+    healthCheckPath: /health/ready
+    autoDeployTrigger: 'off'
+    disk:
+      name: flowrequest-demo-files
+      mountPath: /var/data/flowrequest
+      sizeGB: 1
+    envVars:
+      - key: NODE_VERSION
+        value: 22.21.0
+      - key: FLOWREQUEST_ENV
+        value: demo
+      - key: NODE_ENV
+        value: production
+      - key: PRODUCTION_ENABLED
+        value: 'false'
+      - key: DEMO_DB_NAME
+        value: test
+      - key: DEMO_MONGO_URI
+        sync: false
+      - key: DEMO_JWT_SECRET
+        generateValue: true
+      - key: DEMO_STORAGE_ROOT
+        value: /var/data/flowrequest
+      # HTTPS origin thực tế của Static Site, không có path hoặc dấu / cuối.
+      - key: DEMO_ALLOWED_ORIGINS
+        sync: false
+
+  - type: web
+    name: flowrequest-demo-ui
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm ci --include=dev && npm run build:demo
+    staticPublishPath: ./dist
+    autoDeployTrigger: 'off'
+    envVars:
+      - key: NODE_VERSION
+        value: 22.21.0
+      - key: VITE_APP_ENV
+        value: demo
+      - key: VITE_ENABLE_PRODUCTION
+        value: 'false'
+      # URL HTTPS thực tế của Web Service, kết thúc bằng /api. Vite dùng lúc build.
+      - key: VITE_DEMO_API_URL
+        sync: false
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

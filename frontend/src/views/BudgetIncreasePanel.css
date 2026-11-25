@@ -1,0 +1,29 @@
+.budget-increases {
+  --bi-border: var(--acc-border, var(--dir-border));
+  --bi-muted: var(--acc-muted, var(--dir-muted));
+  --bi-surface: var(--acc-surface, var(--dir-panel));
+  --bi-danger: var(--acc-danger, var(--dir-danger));
+  min-width: 0;
+}
+.budget-increases.dir-panel { margin-top: 24px; }
+.budget-increases--embedded { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--bi-border); }
+.budget-increases h2 { font-size: 18px; }
+.budget-increases h3 { margin: 20px 0 8px; font-size: 15px; }
+.budget-increases__muted { color: var(--bi-muted); }
+.budget-increases__error { color: var(--bi-danger); overflow-wrap: anywhere; }
+.budget-increases__form, .budget-increases__form fieldset { display: grid; gap: 16px; min-width: 0; }
+.budget-increases__form { margin-top: 20px; }
+.budget-increases__form fieldset { margin: 0; padding: 0; border: 0; }
+.budget-increases__form label { display: grid; gap: 8px; }
+.budget-increases :is(input,textarea,select) { font: inherit; color: inherit; background: var(--bi-surface); border: 1px solid var(--bi-border); border-radius: 8px; padding: 10px 12px; min-width: 0; max-width: 100%; }
+.budget-increases textarea { width: 100%; resize: vertical; }
+.budget-increases__filter { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 18px 0; }
+.budget-increases__details { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; margin-top: 20px; }
+.budget-increases__details dt { color: var(--bi-muted); }
+.budget-increases__details dd { margin: 4px 0 0; font-weight: 600; overflow-wrap: anywhere; }
+.budget-increases__reason { white-space: pre-wrap; overflow-wrap: anywhere; }
+.budget-increases__decision { margin-top: 20px; padding-top: 4px; border-top: 1px solid var(--bi-border); }
+.budget-increases__pagination { display: flex; justify-content: flex-end; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
+.budget-increases__pagination button { font: inherit; color: inherit; background: var(--bi-surface); border: 1px solid var(--bi-border); border-radius: 8px; padding: 6px 12px; cursor: pointer; }
+.budget-increases button:disabled { cursor: not-allowed; opacity: .55; }
+@media (max-width: 600px) { .budget-increases__details { grid-template-columns: 1fr; } .budget-increases .acc-section-title { flex-wrap: wrap; } }

@@ -1,0 +1,133 @@
+FLOWREQUEST DEMO — KẾT QUẢ XỬ LÝ 5 NHÓM CHẶN DEPLOY
+Ngày: 24/11/2026 (Asia/Bangkok)
+KẾT LUẬN: CHƯA ĐỦ ĐIỀU KIỆN DEPLOY CÔNG KHAI.
+
+1. MONGODB INTEGRATION — HOÀN TẤT
+Nguyên nhân trước: collection khởi tạo test_init nằm ngoài whitelist an toàn.
+Người dùng đã duyệt riêng việc xóa duy nhất flowrequest_test.test_init nếu rỗng
+và dọn fixture/tệp do chính lượt test tạo. Đã xác minh lại DB/user/quyền/danh sách
+collection và 0 bản ghi trước khi xóa. Không xóa database hoặc collection khác.
+Không bỏ whitelist, không chạy ghi dữ liệu trên Demo/Production.
+- test:mongo:safety: 10/10 đạt.
+- test:mongo: 1/1 đạt, 0 skip; exit 0.
+- Đã thực thi MongoDB transaction thật: duyệt/cam kết đúng một lần, thanh toán
+  từng phần, idempotency, tranh chấp đồng thời, rollback lỗi ledger/audit,
+  chứng từ và giới hạn quyền, snapshot lịch sử không trừ lại ngân sách.
+- Hash bcrypt được kiểm tra trên đủ 6 tài khoản fixture; storage/JWT riêng.
+- Sau test: 6 collection fixture đều 0 bản ghi; marker hợp lệ, activeRun=null;
+  không còn thư mục run. Harness giữ collection/index/control marker, không drop.
+- Có cảnh báo Mongoose về option new đã deprecated; test vẫn đạt. Không sửa
+  lan sang controller đang hoạt động chỉ để dọn cảnh báo trong đợt này.
+
+2. QUYỀN MONGODB DEMO — HƯỚNG DẪN SẴN SÀNG, CHỜ NGƯỜI DÙNG
+Nguyên nhân: user kết nối hiện tại còn quyền dữ liệu ngoài DB Demo tên test.
+Đã kiểm tra lại chỉ đọc; chưa thay quyền, user, URI thật hoặc khởi động lại server.
+Người dùng chọn sẽ tự tạo user riêng sau, yêu cầu báo rõ phần còn chặn.
+Đã chuẩn bị mục 2 PUBLIC_DEPLOY_STEPS.txt với user mới chỉ readWrite trên test,
+không sửa/xóa user cũ, không cấp quyền DB flowrequest_test/flowrequest_production.
+Hướng dẫn cập nhật đúng backend/.env hiện đang hoạt động, giữ JWT/storage và
+mọi dữ liệu; không tạo .env.demo từ mẫu còn placeholder. Không gửi secrets qua chat.
+Test public startup/preflight/account protection: 9/9 đạt.
+Nhóm này CHƯA hoàn tất trên Atlas. Sau khi user tạo/điền URI phải kiểm tra quyền
+hiệu lực và đích dữ liệu trước bước chuyển cấu hình/restart được duyệt.
+
+3. NGÂN SÁCH — HOÀN THIỆN PHƯƠNG ÁN VÀ SỬA BÁO CÁO CHỈ ĐỌC
+Nguyên nhân dữ liệu: 0 Department, 3 đơn IT chờ Accountant tổng 100 triệu;
+52 triệu đã duyệt/đã trả chưa xác nhận thuộc IT. Không coi đây là trừ tiền hai lần.
+Phương án mẫu: hạn mức IT 1 tỷ đồng, cam kết đầu kỳ null để chờ quyết định:
+- Nếu xác nhận 52 triệu thuộc IT và duyệt đối soát: khả dụng 948 triệu trước các
+  đơn chờ, 848 triệu sau khi duyệt đủ 100 triệu.
+- Nếu duyệt hạn mức mới tách lịch sử với cam kết 0: khả dụng 1 tỷ/900 triệu;
+  52 triệu vẫn được công bố là lịch sử chưa gán, chưa đối soát lịch sử đầy đủ.
+Chưa phương án nào được duyệt hoặc ghi Database. Không tự chọn 0 thay null.
+Giữ nguyên khoản 52 triệu, request/payment/chứng từ và ngưỡng 50 triệu.
+
+Lỗi code được xác định trước khi sửa: buildBudgetReview có thể báo ready=true
+khi request đã gắn phòng ban nhưng payment chưa gắn hoặc gắn sai. Đã thêm kiểm
+tra unassignedPaidAmount và paymentDepartmentMismatches vào điều kiện readiness.
+Chỉ sửa CLI báo cáo, không đổi API/workflow/logic ghi ngân sách hoặc thanh toán.
+Thêm test hồi quy tái hiện liên kết thiếu/sai rồi đối chiếu đúng trong fixture.
+- Test ngân sách/tài chính/thanh toán: 7/7 đạt.
+- Báo cáo MongoDB thật vẫn ready=false; writes=0; không lệch payment counter.
+- Tạo ngân sách/đối soát lịch sử vẫn phải chờ duyệt dữ liệu riêng.
+
+4. CORS PUBLIC — MẪU VÀ KIỂM THỬ SẴN SÀNG, CHỜ DOMAIN
+Người dùng chưa chọn hosting/domain nên chưa đặt origin thật vào .env.
+Đã chuẩn bị lại mẫu .env.demo.example và hướng dẫn NODE_ENV=production với
+FLOWREQUEST_ENV=demo/start:demo; HTTPS origins chính xác, proxy IP chính xác,
+/demo-api tới Demo, không đổi frontend sang Production hoặc bỏ xác minh TLS.
+Test CORS có server cô lập: origin hợp lệ có header, origin khác không được
+CORS cho phép, OPTIONS hoạt động, API không token vẫn 401. Không kết nối DB.
+- Test CORS/deployment/preflight: 5/5 đạt.
+- check:demo --offline với cấu hình thật vẫn FAIL vì thiếu DEMO_ALLOWED_ORIGINS.
+Đây là phần chờ cấu hình domain thật, không được đánh giá đã đạt public readiness.
+
+5. HOSTING/DEPLOY — MẪU CHUẨN BỊ, CHƯA CÓ HOST THẬT ĐỂ XÁC MINH
+Đã chuẩn bị hướng dẫn theo yêu cầu runtime Node + MongoDB transaction + storage
+bền vững, mẫu Nginx hiện có và mẫu systemd cho trường hợp Linux/VPS phù hợp.
+Không kích hoạt dịch vụ/proxy, cấp domain, mở firewall hoặc di chuyển dữ liệu.
+Hướng dẫn có bước backup/restore trên môi trường riêng, bảo toàn chứng từ,
+nginx -t/systemd verify trên host đã chọn, secrets không public, HTTPS, port,
+deep links, quota/logs, restart/redeploy và checklist online 6 role.
+- Test hosting checker: 2/2 đạt.
+- Máy hiện tại chưa có Nginx và chưa chọn domain; không giả lập nginx -t hoặc
+  xác nhận template/service là đã chạy trên host thật.
+- TLS, proxy/firewall, storage qua redeploy, backup/restore và tải dự kiến chưa xác minh.
+
+KIỂM THỬ CUỐI VÀ BẢO TOÀN
+- Hồi quy unit/contract Frontend + Backend: 65/65 đạt,
+  0 lỗi, 0 skip. Bài MongoDB chạy riêng ở nhóm 1.
+  Các nhóm test ở trên có ca trùng nhau; không cộng chúng thành tổng test duy nhất.
+- Build Demo đạt; lint 0 lỗi/32 cảnh báo cũ. Không cập nhật thư viện.
+- Code nghiệp vụ, UI, roles, enums, workflow và threshold không thay đổi.
+  Source runtime duy nhất sửa là CLI báo cáo ngân sách; không cần restart app.
+- Hash 7 collection Demo: 0 collection thay đổi giữa mốc audit trước
+  integration và mốc đọc đầu tác vụ; 0 collection thay đổi trong tác vụ.
+- Chứng từ thanh toán không thiếu, hash khớp. 1 upload chưa có tham chiếu được
+  giữ nguyên, không tự dọn vì chưa xác định nguồn gốc.
+- Không sửa/xóa dữ liệu Demo, không đổi file .env thật và không kết nối DB Production.
+- Backup các file source/test/docs trước sửa nằm trong
+  .backups/demo-five-blockers-20261124/*before*; không sao lưu secrets vào báo cáo.
+
+FILE ĐÃ SỬA/BỔ SUNG TRONG REPO
+- Sửa: backend/src/cli/reportDemoBudget.js
+- Sửa: backend/test/budget-review.test.js
+- Sửa: deploy/demo/budget-proposal.json
+- Sửa: deploy/demo/ONLINE_CHECKLIST.txt
+- Sửa: deploy/demo/README.txt
+- Sửa: backend/.env.demo.example
+- Thêm: deploy/demo/flowrequest-demo.service.example
+- Thêm: deploy/demo/PUBLIC_DEPLOY_STEPS.txt
+- Thêm: backend/.env.test.example
+Các file .mjs/.log/.json/build trong .backups là công cụ/bằng chứng kiểm tra,
+không được gắn vào runtime hoặc phục vụ public.
+
+CÒN THIẾU ĐỂ ĐỦ ĐIỀU KIỆN DEPLOY
+1) Người dùng tạo user Demo riêng, điền URI và xác minh quyền hiệu lực chỉ DB test.
+2) Duyệt ngân sách/cam kết đầu kỳ và quyết định đối soát phòng ban của 52 triệu.
+3) Chọn domain/hosting rồi cấu hình origins/proxy thật; public preflight phải đạt.
+4) Kiểm chứng hosting thật: TLS/routing/firewall, storage bền vững, backup/restore,
+   tải dự kiến, 6 role và workflow qua hạ tầng triển khai.
+
+MongoDB Integration đã hết chặn. Các phần được phép chuẩn bị trước đã hoàn tất;
+4 nhóm hạ tầng/dữ liệu ở trên vẫn CHƯA hoàn tất, vì vậy CHƯA ĐỦ ĐIỀU KIỆN
+DEPLOY CÔNG KHAI. Không coi hướng dẫn/mẫu hoặc test cô lập là thay thế cấu hình
+và kiểm chứng hạ tầng thật.
+
+HƯỚNG DẪN ÁP DỤNG
+deploy/demo/PUBLIC_DEPLOY_STEPS.txt
+deploy/demo/budget-proposal.json
+deploy/demo/ONLINE_CHECKLIST.txt
+
+CHỨNG CỨ
+.backups/demo-five-blockers-20261124/report.json
+group1-safety.log; group1-integration.log; group1-cleanup.json
+approved-test-init-removal.json; group2-security.log; group3-budget.log
+group3-budget-readonly.log; group4-cors.log; group4-config-current.log
+group5-hosting.log; tests-final.log; build-final.log; lint-final.log
+source-preservation.json; database-baseline.json; database-preservation.json
+
+Tài liệu chính thức đã đối chiếu khi chuẩn bị hướng dẫn:
+https://www.mongodb.com/docs/atlas/security-add-mongodb-users/
+https://expressjs.com/en/guide/behind-proxies/
+https://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_pass

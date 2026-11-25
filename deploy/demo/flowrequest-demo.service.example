@@ -1,0 +1,29 @@
+# Optional Linux/systemd template only. Replace placeholders and review before use.
+# Do not install/enable/restart this service without deployment approval.
+[Unit]
+Description=FlowRequest Demo API
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=<SERVICE_USER>
+Group=<SERVICE_GROUP>
+WorkingDirectory=<ABSOLUTE_BACKEND_PATH>
+Environment=NODE_ENV=production
+Environment=FLOWREQUEST_ENV=demo
+ExecStart=<ABSOLUTE_NODE_BINARY> <ABSOLUTE_BACKEND_PATH>/src/server.js --environment=demo
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=45
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+# This directory must exist, match DEMO_STORAGE_ROOT, and contain existing files.
+ReadWritePaths=<ABSOLUTE_DEMO_STORAGE_ROOT>
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

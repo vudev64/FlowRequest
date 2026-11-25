@@ -1,0 +1,287 @@
+/* One typography scale for every HR page, scoped to this workspace. */
+.hr-admin-shell .hr-profile-menu { position: relative; }
+.hr-admin-shell .top-user.hr-profile-trigger { padding: 5px 8px; border: 1px solid transparent; border-radius: 10px; background: transparent; color: var(--c-text); cursor: pointer; }
+.hr-admin-shell .top-user.hr-profile-trigger:hover,
+.hr-admin-shell .top-user.hr-profile-trigger[aria-expanded="true"] { background: var(--c-primary-soft); border-color: var(--c-border); }
+.hr-admin-shell .hr-profile-trigger > svg { transition: transform .18s ease; }
+.hr-admin-shell .hr-profile-trigger > svg.is-open { transform: rotate(180deg); }
+.hr-admin-shell .hr-profile-dropdown { position: absolute; top: calc(100% + 10px); right: 0; z-index: 60; width: min(290px, calc(100vw - 32px)); padding: 20px; border: 1px solid var(--c-border); border-radius: 14px; background: var(--c-surface); color: var(--c-text); box-shadow: 0 12px 32px rgba(15, 23, 42, .16); }
+.hr-admin-shell .hr-profile-dropdown h2 { margin: 0 0 16px; font: 600 14px/1.5 var(--hr-font); letter-spacing: normal; }
+.hr-admin-shell .hr-profile-dropdown dl { display: grid; gap: 14px; margin: 0; }
+.hr-admin-shell .hr-profile-dropdown dt { margin-bottom: 4px; color: var(--c-muted); font-size: 12px; line-height: 1.5; }
+.hr-admin-shell .hr-profile-dropdown dd { margin: 0; font-size: 13px; font-weight: 500; line-height: 1.6; overflow-wrap: anywhere; }
+.hr-admin-shell .hr-profile-dropdown dd small { display: block; margin-top: 3px; color: var(--c-muted); font-size: 11px; font-weight: 400; }
+
+.hr-admin-shell {
+  --hr-font: 'Inter', 'Segoe UI', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --hr-title-size: 24px;
+  --hr-body-size: 13px;
+  --hr-caption-size: 12px;
+  font-family: var(--hr-font);
+  font-size: var(--hr-body-size);
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.hr-admin-shell .main-area :is(button, input, select, textarea) {
+  font-family: var(--hr-font);
+  font-size: var(--hr-body-size);
+  line-height: 1.5;
+  letter-spacing: normal;
+}
+.hr-admin-shell .main-area :is(.primary-button, .secondary-button, .danger-button, .reject-button, .text-button) { font-weight: 600; }
+.hr-admin-shell .main-area .topbar h1 { font-size: 28px; font-weight: 700; line-height: 1.35; letter-spacing: -.025em; }
+.hr-admin-shell .main-area .topbar p { font-size: var(--hr-body-size); line-height: 1.65; }
+.hr-admin-shell .main-area .page-intro h1 { font-size: var(--hr-title-size); font-weight: 700; line-height: 1.35; letter-spacing: -.025em; margin: 6px 0 8px; }
+.hr-admin-shell .main-area .page-intro { align-items: flex-start; }
+.hr-admin-shell .main-area .page-intro p { font-size: var(--hr-body-size); line-height: 1.65; }
+.hr-admin-shell .main-area .eyebrow { font-size: 11px; font-weight: 600; line-height: 1.5; letter-spacing: .045em; text-transform: none; }
+.hr-admin-shell .main-area .stat-card p { font-size: var(--hr-body-size); font-weight: 500; line-height: 1.5; }
+.hr-admin-shell .main-area .stat-card strong { font-size: 26px; font-weight: 700; line-height: 1.2; letter-spacing: -.025em; }
+.hr-admin-shell .main-area .stat-card span { font-size: var(--hr-caption-size); line-height: 1.5; }
+.hr-admin-shell .main-area .table-card th { font-size: var(--hr-caption-size); font-weight: 600; line-height: 1.5; letter-spacing: normal; text-transform: none; }
+.hr-admin-shell .main-area .table-card td { font-size: var(--hr-body-size); font-weight: 400; line-height: 1.55; }
+.hr-admin-shell .main-area .table-card .person-cell b { font-size: 14px; font-weight: 600; }
+.hr-admin-shell .main-area .table-card .person-cell span { font-size: var(--hr-caption-size); line-height: 1.5; }
+.hr-admin-shell .main-area .table-title b { font-size: 14px; font-weight: 600; line-height: 1.5; }
+.hr-admin-shell .main-area .table-title span { font-size: var(--hr-caption-size); }
+.hr-admin-shell .main-area .table-card :is(.role-badge, .status-toggle, td .secondary-button) { font-size: var(--hr-caption-size); font-weight: 500; line-height: 1.5; }
+.hr-admin-shell .main-area .content-wrap .welcome-card h2 { font-size: var(--hr-title-size); font-weight: 700; letter-spacing: -.025em; line-height: 1.35; }
+.hr-admin-shell .main-area .content-wrap .welcome-card p { font-size: var(--hr-body-size); line-height: 1.65; }
+.hr-admin-shell .main-area .content-wrap :is(.quick-card, .recent-card, .security-card) .card-heading :is(b, strong),
+.hr-admin-shell .main-area .content-wrap .quick-card :is(b, strong) { font-size: 14px; font-weight: 600; line-height: 1.5; letter-spacing: normal; }
+.hr-admin-shell .main-area .content-wrap .quick-card :is(small, span),
+.hr-admin-shell .main-area .content-wrap :is(.quick-card, .recent-card, .security-card) .card-heading span { font-size: var(--hr-caption-size); line-height: 1.5; font-weight: 400; }
+.hr-admin-shell .main-area .content-wrap .recent-card .request-person b { font-size: var(--hr-body-size); font-weight: 600; }
+.hr-admin-shell .main-area .content-wrap .recent-card :is(.request-badge, .time-label, .request-person small) { font-size: var(--hr-caption-size); font-weight: 500; line-height: 1.5; }
+.hr-admin-shell .main-area .modal .modal-header h2 { font-family: var(--hr-font); font-size: 18px; font-weight: 600; line-height: 1.4; letter-spacing: -.015em; }
+.hr-admin-shell .main-area .modal label { font-size: var(--hr-body-size); font-weight: 500; line-height: 1.5; }
+.hr-admin-shell .main-area .modal .modal-note { font-size: var(--hr-caption-size); line-height: 1.6; }
+
+@media (max-width: 700px) {
+  .hr-admin-shell { --hr-title-size: 20px; }
+  .hr-admin-shell .main-area .topbar h1 { font-size: 24px; }
+  .hr-admin-shell .main-area .page-intro { flex-wrap: wrap; gap: 12px; }
+}
+
+.hr-admin-shell :is(.hr-requests-panel, .hr-permissions-panel) {
+  min-width: 0;
+  font-family: var(--hr-font);
+  font-size: var(--hr-body-size);
+  font-weight: 400;
+  line-height: 1.6;
+  letter-spacing: normal;
+  color: var(--c-text);
+}
+
+.hr-admin-shell :is(.hr-requests-panel, .hr-permissions-panel) :is(button, input, select, textarea) {
+  font-family: var(--hr-font);
+  font-size: 13px;
+  line-height: 1.5;
+  letter-spacing: normal;
+}
+
+.hr-admin-shell :is(.hr-requests-panel, .hr-permissions-panel) button {
+  font-weight: 600;
+}
+
+.hr-admin-shell .hr-requests-panel .page-heading,
+.hr-admin-shell .hr-permissions-panel .hr-panel-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  margin: 0 0 24px;
+  padding: 0;
+}
+
+.hr-admin-shell .hr-requests-panel .page-heading h2,
+.hr-admin-shell .hr-permissions-panel .hr-panel-heading h2 {
+  margin: 6px 0 8px;
+  font-family: var(--hr-font);
+  font-size: var(--hr-title-size);
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: -.025em;
+  color: var(--c-text);
+}
+
+.hr-admin-shell .hr-requests-panel .page-heading p,
+.hr-admin-shell .hr-permissions-panel .hr-panel-heading p {
+  max-width: 680px;
+  margin: 0;
+  color: var(--c-muted);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.65;
+}
+
+.hr-admin-shell .hr-requests-panel .eyebrow,
+.hr-admin-shell .hr-permissions-panel .hr-section-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: .045em;
+  text-transform: none;
+  color: var(--c-primary-text);
+}
+
+.hr-admin-shell :is(.hr-result-count, .hr-role-tag, .hr-permission-tag) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  gap: 7px;
+  min-height: 30px;
+  padding: 5px 11px;
+  border: 1px solid var(--c-border);
+  border-radius: 8px;
+  background: var(--c-surface);
+  color: var(--c-muted);
+  font-family: var(--hr-font);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: normal;
+  white-space: nowrap;
+}
+
+.hr-admin-shell .hr-requests-panel .hr-request-filters {
+  align-items: center;
+  margin: 0 0 18px;
+}
+
+.hr-admin-shell .hr-requests-panel .hr-request-filters :is(input, select) {
+  min-height: 42px;
+  font-weight: 400;
+}
+
+.hr-admin-shell .hr-requests-panel .hr-request-table {
+  padding: 0;
+  margin: 0;
+}
+
+.hr-admin-shell .hr-requests-panel .hr-request-table > table {
+  display: table;
+  margin: 0;
+  padding: 0;
+  border-collapse: collapse;
+}
+
+.hr-admin-shell .hr-requests-panel .hr-request-table th {
+  padding: 14px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: normal;
+  text-transform: none;
+  white-space: nowrap;
+}
+
+.hr-admin-shell .hr-requests-panel .hr-request-table td {
+  padding: 16px;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.55;
+  vertical-align: middle;
+}
+
+.hr-admin-shell .hr-requests-panel .hr-request-table th:first-child { width: 36%; }
+.hr-admin-shell .hr-requests-panel .hr-request-table :is(th, td):last-child { text-align: right; }
+.hr-admin-shell .hr-requests-panel .hr-request-table td:nth-child(4) { white-space: nowrap; }
+.hr-admin-shell .hr-requests-panel .hr-request-table tbody tr:last-child td { border-bottom: 0; }
+.hr-admin-shell .hr-requests-panel .hr-row-actions { justify-content: flex-end; width: max-content; margin-left: auto; }
+
+.hr-admin-shell .hr-requests-panel .hr-request-table .hr-request-title {
+  display: block;
+  max-width: 340px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--c-text);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.5;
+  text-align: left;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.hr-admin-shell .hr-requests-panel .hr-request-title:hover { color: var(--c-primary-text); }
+.hr-admin-shell .hr-requests-panel .hr-request-table td small {
+  display: block;
+  margin-top: 4px;
+  color: var(--c-muted);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.hr-admin-shell .hr-status-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 10px;
+  border-radius: 7px;
+  background: var(--c-warn-bg);
+  color: var(--c-warn);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+.hr-admin-shell .hr-status-tag--approved { background: var(--c-ok-bg); color: var(--c-ok); }
+.hr-admin-shell .hr-status-tag--rejected { background: var(--c-danger-bg); color: var(--c-danger); }
+.hr-admin-shell .hr-status-tag--cancelled { background: #f0f2f5; color: #64748b; }
+.hr-admin-shell .hr-requests-panel .hr-row-actions :is(button, a) { min-height: 34px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+.hr-admin-shell .hr-requests-panel .hr-pagination { color: var(--c-muted); font-size: 12px; }
+.hr-admin-shell .hr-requests-panel .empty-state h3 { font-size: 16px; font-weight: 600; line-height: 1.4; }
+.hr-admin-shell .hr-requests-panel .empty-state p { font-size: 13px; line-height: 1.6; }
+.hr-admin-shell .hr-requests-panel .modal-header h2 { font-family: var(--hr-font); font-size: 18px; font-weight: 600; letter-spacing: -.015em; line-height: 1.4; }
+.hr-admin-shell .hr-requests-panel .hr-decision-body { font-size: 13px; line-height: 1.65; }
+.hr-admin-shell .hr-requests-panel .hr-decision-body b { font-size: 14px; font-weight: 600; }
+.hr-admin-shell .hr-requests-panel .hr-decision-body label { font-size: 13px; font-weight: 500; }
+
+.hr-admin-shell .hr-permission-list {
+  overflow: hidden;
+  border: 1px solid var(--c-border);
+  border-radius: 14px;
+  background: var(--c-surface);
+}
+.hr-admin-shell .hr-permission-item {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 16px;
+  padding: 22px 24px;
+}
+.hr-admin-shell .hr-permission-item + .hr-permission-item { border-top: 1px solid var(--c-border); }
+.hr-admin-shell .hr-permission-icon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 11px;
+  color: var(--c-primary-text);
+  background: var(--c-primary-soft);
+}
+.hr-admin-shell .hr-permission-item h3 { margin: 0 0 5px; font-size: 14px; font-weight: 600; line-height: 1.5; letter-spacing: normal; }
+.hr-admin-shell .hr-permission-item p { max-width: 740px; margin: 0; color: var(--c-muted); font-size: 13px; font-weight: 400; line-height: 1.7; }
+.hr-admin-shell .hr-permission-tag { margin-top: 3px; }
+.hr-admin-shell .hr-permission-tag--allowed { color: var(--c-ok); background: var(--c-ok-bg); border-color: transparent; }
+.hr-admin-shell .hr-permission-tag--workflow { color: var(--c-info); background: var(--c-info-bg); border-color: transparent; }
+.hr-admin-shell .hr-permission-note { display: flex; align-items: flex-start; gap: 12px; margin-top: 20px; padding: 18px 20px; border: 1px solid var(--c-border); border-radius: 12px; background: var(--c-primary-soft); }
+.hr-admin-shell .hr-permission-note > svg { flex-shrink: 0; margin-top: 2px; color: var(--c-primary-text); }
+.hr-admin-shell .hr-permission-note strong { font-size: 13px; font-weight: 600; line-height: 1.5; }
+.hr-admin-shell .hr-permission-note p { margin: 4px 0 0; color: var(--c-muted); font-size: 13px; line-height: 1.65; }
+
+@media (max-width: 700px) {
+  .hr-admin-shell .hr-requests-panel .page-heading,
+  .hr-admin-shell .hr-permissions-panel .hr-panel-heading { flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
+  .hr-admin-shell .hr-requests-panel .page-heading h2,
+  .hr-admin-shell .hr-permissions-panel .hr-panel-heading h2 { font-size: 20px; }
+  .hr-admin-shell .hr-permission-item { grid-template-columns: 36px minmax(0, 1fr); gap: 12px; padding: 18px 16px; }
+  .hr-admin-shell .hr-permission-icon { width: 36px; height: 36px; }
+  .hr-admin-shell .hr-permission-item .hr-permission-tag { grid-column: 2; justify-self: start; margin: 0; }
+  .hr-admin-shell .hr-permission-note { padding: 16px; }
+}

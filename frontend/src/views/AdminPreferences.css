@@ -1,0 +1,16 @@
+:is(.hr-admin-shell, .system-admin-shell) .admin-preference-controls { display:flex; align-items:center; gap:8px; flex-shrink:0; }
+:is(.hr-admin-shell, .system-admin-shell) :is(.admin-language-toggle, .admin-theme-toggle) { display:inline-flex; align-items:center; justify-content:center; gap:6px; height:36px; padding:0 10px; border:1px solid var(--c-border); border-radius:8px; background:var(--c-surface); color:var(--c-muted); font-family:inherit; font-size:12px; font-weight:500; line-height:1.5; cursor:pointer; }
+:is(.hr-admin-shell, .system-admin-shell) .admin-language-toggle .selected { color:var(--c-primary-text); font-weight:700; }
+:is(.hr-admin-shell, .system-admin-shell) :is(.admin-language-toggle, .admin-theme-toggle):hover { background:var(--c-primary-soft); color:var(--c-primary-text); }
+.app-shell:is(.hr-admin-shell, .system-admin-shell)[data-theme="dark"] { color-scheme:dark; --c-bg:#11182b; --c-surface:#19223a; --c-border:#2a3551; --c-text:#e6eaf5; --c-muted:#a0aac1; --c-primary-soft:#252d52; --c-primary-text:#aab4ff; --c-ok:#78d4ad; --c-ok-bg:#173e34; --c-warn:#edc479; --c-warn-bg:#3c3221; --c-danger:#f29aaa; --c-danger-bg:#442b37; --c-info:#aab4ff; --c-info-bg:#252d52; }
+.app-shell:is(.hr-admin-shell, .system-admin-shell)[data-theme="dark"] :is(th, .table-note, .modal-note, .table-toolbar, .log-detail, .empty-state) { background:var(--c-surface); color:var(--c-muted); border-color:var(--c-border); }
+.app-shell:is(.hr-admin-shell, .system-admin-shell)[data-theme="dark"] :is(td, .table-title, .modal-header, .modal-actions, .topbar, .hr-permission-item) { border-color:var(--c-border); }
+.app-shell:is(.hr-admin-shell, .system-admin-shell)[data-theme="dark"] tbody tr:hover { background:var(--c-bg); }
+.app-shell:is(.hr-admin-shell, .system-admin-shell)[data-theme="dark"] :is(input, select, textarea, .inline-error button) { background:var(--c-surface); color:var(--c-text); border-color:var(--c-border); }
+.app-shell:is(.hr-admin-shell, .system-admin-shell)[data-theme="dark"] :is(.role-badge, .badge, .avatar-slate, .hr-permission-tag--readonly) { background:var(--c-primary-soft); color:var(--c-primary-text); }
+.app-shell:is(.hr-admin-shell, .system-admin-shell)[data-theme="dark"] :is(.badge-success, .status-toggle.on) { background:var(--c-ok-bg); color:var(--c-ok); }
+.app-shell:is(.hr-admin-shell, .system-admin-shell)[data-theme="dark"] .badge-danger { background:var(--c-danger-bg); color:var(--c-danger); }
+.app-shell:is(.hr-admin-shell, .system-admin-shell)[data-theme="dark"] :is(.badge-warning, .warning-note) { background:var(--c-warn-bg); color:var(--c-warn); }
+.app-shell:is(.hr-admin-shell, .system-admin-shell)[data-theme="dark"] :is(.request-drawer, .drawer-header, .drawer-footer) { background:var(--c-surface); border-color:var(--c-border); color:var(--c-text); }
+.app-shell:is(.hr-admin-shell, .system-admin-shell)[data-theme="dark"] :is(.inline-error, .error-state) { background:var(--c-danger-bg); color:var(--c-danger); border-color:var(--c-danger); }
+@media(max-width:700px) { :is(.hr-admin-shell, .system-admin-shell) .topbar { flex-wrap:wrap; } :is(.hr-admin-shell, .system-admin-shell) :is(.top-actions, .topbar-actions) { flex-wrap:wrap; gap:8px; } }

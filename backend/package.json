@@ -1,0 +1,40 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Small Business Workflow Approval System",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon src/server.js --environment=demo",
+    "start": "node src/server.js --environment=demo",
+    "start:demo": "node src/server.js --environment=demo",
+    "start:production": "node src/server.js --environment=production",
+    "bootstrap:production": "node src/cli/bootstrapProduction.js --environment=production",
+    "test": "node --test test/*.test.js",
+    "test:hr": "node --test test/hr.test.js",
+    "test:admin": "node --test test/admin.test.js",
+    "test:settings": "node --test test/settings.test.js",
+    "test:mongo": "node test/runFinanceMongo.js",
+    "test:mongo:safety": "node --test test/mongo-safety.test.js",
+    "check:demo": "node src/cli/checkDemoDeployment.js --environment=demo",
+    "report:demo-budget": "node src/cli/reportDemoBudget.js --environment=demo",
+    "check:demo-hosting": "node src/cli/checkDemoHosting.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1176.0",
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.11.4",
+    "multer": "^2.5.0",
+    "resend": "^6.28.1"
+  },
+  "devDependencies": {
+    "nodemon": "3.1.11"
+  }
+}

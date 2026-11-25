@@ -1,0 +1,612 @@
+/* HR workspace theme aligned with the shared dashboard design system.
+   Scope: áp dụng cho .hr-admin-shell HOẶC .app-shell[data-role="HR_Admin"] (không phân biệt hoa thường),
+   nên vẫn chạy dù JSX chưa gắn class hr-admin-shell. */
+
+/* ---------- Theme + khung lưới ---------- */
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) {
+  --c-primary: #5865d8;
+  --c-primary-hover: #4c59ca;
+  --c-primary-soft: #f3f4ff;
+  --c-primary-text: #4a57c4;
+  --c-sidebar: #192657;
+  --c-sidebar-active: rgba(255, 255, 255, .1);
+  --c-bg: #f6f7fb;
+  --c-surface: #fff;
+  --c-border: #e6e9f2;
+  --c-text: #1d2748;
+  --c-muted: #6b738a;
+  --c-ok: #178a5b;
+  --c-ok-bg: #e9f8f1;
+  --c-warn: #a86509;
+  --c-warn-bg: #fff4e0;
+  --c-danger: #b23a4e;
+  --c-danger-bg: #fff0f2;
+  --c-info: #3a52c4;
+  --c-info-bg: #edf0ff;
+
+  display: grid;
+  grid-template-columns: 252px minmax(0, 1fr);
+  min-height: 100dvh;
+  color: var(--c-text);
+  background: var(--c-bg);
+}
+
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]),
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) button,
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) input,
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) select,
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) textarea { font-family: inherit; }
+
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) *,
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) *::before,
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) *::after { box-sizing: border-box; }
+
+/* Phần tử mobile luôn ẩn trên desktop, và không được chiếm ô lưới */
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .mobile-overlay,
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .mobile-menu { display: none; }
+
+/* Ghim vị trí: sidebar luôn cột 1, main luôn cột 2 */
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) > .sidebar-wrap { grid-column: 1; grid-row: 1; width: auto; min-width: 0; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) > .main-area { grid-column: 2; grid-row: 1; min-width: 0; }
+
+/* ---------- Sidebar ---------- */
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .sidebar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  width: auto;
+  height: 100dvh;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0;
+  padding: 27px 16px 18px;
+  color: #fff;
+  background: var(--c-sidebar);
+  border: 0;
+  border-right: 1px solid rgba(255, 255, 255, .08);
+  box-shadow: 8px 0 30px rgba(17, 29, 72, .08);
+}
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .brand { display: flex; align-items: center; gap: 10px; padding: 0 7px 24px; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .brand > div:last-child { min-width: 0; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .brand-mark {
+  display: inline-flex;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, .2);
+  border-radius: 9px;
+  color: #fff;
+  background: linear-gradient(145deg, #7180f5, #4b5ac8);
+  box-shadow: 0 8px 18px rgba(8, 15, 30, .25);
+  font-size: 15px;
+  font-weight: 800;
+}
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .brand b { color: #fff; font-size: 17px; font-weight: 780; letter-spacing: -.035em; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .brand b span { color: #fff; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .brand small,
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .nav-label { color: rgba(216, 224, 255, .55); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .brand small { display: block; margin-top: 4px; font-size: 9px; font-weight: 750; letter-spacing: .14em; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .nav-label { margin: 0 0 9px; padding: 0 10px; font-size: 9px; font-weight: 750; letter-spacing: .16em; text-transform: uppercase; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) nav { display: grid; align-content: start; gap: 4px; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .nav-item {
+  display: flex;
+  width: 100%;
+  min-height: 42px;
+  align-items: center;
+  gap: 11px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 8px;
+  color: rgba(237, 240, 255, .76);
+  background: transparent;
+  font-size: 12px;
+  font-weight: 570;
+  text-align: left;
+  text-decoration: none;
+  transition: background .18s ease, color .18s ease;
+}
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .nav-item svg { flex: 0 0 auto; color: #b6c1d3; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .nav-item:hover,
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .nav-item.active { color: #fff; background: var(--c-sidebar-active); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .nav-item.active { background: var(--c-sidebar-active); box-shadow: inset 3px 0 0 #fff; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .nav-item em {
+  min-width: 18px;
+  margin-left: auto;
+  padding: 2px 6px;
+  border-radius: 999px;
+  color: #192657;
+  background: #c7ceff;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 750;
+  line-height: 1.3;
+  text-align: center;
+}
+
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .sidebar-bottom { display: grid; gap: 0; margin-top: auto; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .help-card,
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .profile {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  align-items: center;
+  gap: 9px;
+  padding: 10px;
+  border: 1px solid rgba(255, 255, 255, .13);
+  border-radius: 9px;
+  color: rgba(222, 229, 255, .64);
+  background: rgba(255, 255, 255, .055);
+  text-align: left;
+}
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .help-card { margin: 0 0 12px; cursor: pointer; font: inherit; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .help-card:hover { background: rgba(255, 255, 255, .09); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .help-card > svg:last-child { flex: 0 0 auto; color: rgba(255, 255, 255, .6); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .help-icon { display: grid; width: 30px; height: 30px; flex: 0 0 30px; place-items: center; border-radius: 8px; color: #c7ceff; background: rgba(88, 101, 216, .2); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .help-card > div:nth-child(2),
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .profile > div:nth-child(2) { min-width: 0; flex: 1; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .help-card b,
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .help-card span,
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .profile b,
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .profile span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .help-card b,
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .profile b { color: #fff; font-size: 10px; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .help-card span,
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .profile span { margin-top: 4px; color: rgba(222, 229, 255, .58); font-size: 9px; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .profile > button {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  place-items: center;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, .14);
+  border-radius: 8px;
+  color: rgba(255, 229, 232, .9);
+  background: rgba(255, 255, 255, .06);
+  cursor: pointer;
+}
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .profile > button:hover { border-color: rgba(255, 151, 165, .4); color: #fff; background: rgba(210, 77, 97, .2); }
+
+/* Avatar theo bảng màu Employee / Manager. */
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .avatar,
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .mini-avatar { color: #fff; background: linear-gradient(145deg, #7180f5, #4b5ac8); }
+
+/* ---------- Topbar / main ---------- */
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .main-area { padding: 0 clamp(22px, 3.2vw, 48px) 42px; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .topbar {
+  position: static;
+  display: flex;
+  min-height: 70px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--c-border);
+  background: transparent;
+}
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .topbar h1 { margin: 0 0 4px; color: var(--c-text); font-size: clamp(24px, 2.4vw, 30px); font-weight: 760; letter-spacing: -.045em; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .topbar p { margin: 0; color: var(--c-muted); font-size: 13px; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .top-actions { display: flex; align-items: center; gap: 12px; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .top-user { display: flex; align-items: center; gap: 9px; color: var(--c-text); font-size: 12px; font-weight: 600; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .content-wrap { width: min(100%, 1480px); max-width: none; padding: 30px 0 0; margin: 0 auto; }
+
+/* ---------- Page intro + buttons ---------- */
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .page-intro { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; margin-bottom: 24px; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .page-intro h1 { margin: 10px 0 6px; color: var(--c-text); font-size: clamp(24px, 2.4vw, 30px); font-weight: 760; letter-spacing: -.045em; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .page-intro p { margin: 0; color: var(--c-muted); font-size: 13px; line-height: 1.6; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .eyebrow { display: flex; align-items: center; gap: 6px; color: var(--c-primary-text); font-size: 9px; font-weight: 750; letter-spacing: .14em; text-transform: uppercase; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .eyebrow-line { width: 17px; height: 1px; background: var(--c-primary); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .intro-actions { display: flex; gap: 8px; }
+
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .primary-button,
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .secondary-button,
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .danger-button,
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .reject-button,
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .text-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  font-size: 11px;
+  font-weight: 650;
+  cursor: pointer;
+  transition: background .18s ease, border-color .18s ease, color .18s ease;
+}
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .primary-button { min-height: 37px; padding: 0 13px; border-color: var(--c-primary); color: #fff; background: var(--c-primary); box-shadow: none; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .primary-button:hover { border-color: var(--c-primary-hover); background: var(--c-primary-hover); transform: none; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .secondary-button,
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .reject-button { min-height: 37px; padding: 0 13px; border-color: var(--c-border); color: var(--c-text); background: var(--c-surface); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .secondary-button:hover,
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .reject-button:hover { background: var(--c-bg); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .danger-button { min-height: 37px; padding: 0 13px; border-color: var(--c-danger); color: #fff; background: var(--c-danger); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .text-button { min-height: 28px; margin: 0; padding: 0 7px; color: var(--c-primary-text); background: transparent; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .text-button:hover { background: var(--c-primary-soft); }
+
+/* ---------- Thẻ thống kê ---------- */
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .stats-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-bottom: 24px; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .stat-card,
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .table-card,
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .recent-card,
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .permission-card,
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .code-card,
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .security-card,
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .quick-card { border: 1px solid var(--c-border); border-radius: 10px; background: var(--c-surface); box-shadow: 0 1px 2px rgba(23, 32, 62, .04); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .stat-card { min-height: 0; align-items: center; gap: 14px; padding: 18px 20px; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .stat-card > div:last-child { min-width: 0; flex: 1; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .stat-card p { margin: 0; font-size: 12px; font-weight: 600; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .stat-card p,
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .stat-card span { color: var(--c-muted); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .stat-card strong { display: block; margin-top: 6px; color: var(--c-text); font-size: 24px; font-weight: 750; letter-spacing: -.04em; line-height: 1.1; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .stat-card span { display: block; margin-top: 4px; font-size: 11px; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .stat-icon { display: grid; width: 36px; height: 36px; flex: 0 0 36px; place-items: center; border-radius: 10px; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .stat-icon.indigo,
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .stat-teal { color: var(--c-primary-text); background: var(--c-primary-soft); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .stat-icon.green { color: var(--c-ok); background: var(--c-ok-bg); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .stat-icon.amber { color: var(--c-warn); background: var(--c-warn-bg); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .stat-icon.blue { color: var(--c-info); background: var(--c-info-bg); }
+
+/* ---------- Toolbar + bảng ---------- */
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .toolbar { gap: 9px; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .search-box,
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .select-box { border-color: var(--c-border); border-radius: 8px; background: var(--c-surface); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .search-box input,
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .select-box select { color: var(--c-text); font-size: 12px; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) input,
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) select,
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) textarea { border-color: var(--c-border); color: var(--c-text); background: var(--c-surface); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) input:focus,
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) select:focus,
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) textarea:focus { border-color: var(--c-primary); box-shadow: 0 0 0 3px rgba(88, 101, 216, .12); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .table-title { min-height: 58px; padding: 12px 18px; border-bottom-color: var(--c-border); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .table-title b { color: var(--c-text); font-size: 12px; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .table-title span { color: var(--c-muted); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) th { padding: 11px 15px; color: var(--c-muted); background: #fafbfe; font-size: 9px; font-weight: 750; letter-spacing: .07em; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) td { padding: 12px 15px; border-top: 1px solid #eef0f5; color: var(--c-text); font-size: 11px; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) tbody tr:hover { background: #fafbfe; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .person-cell b { color: var(--c-text); font-weight: 650; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .person-cell span { color: var(--c-muted); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .role-badge,
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .request-badge { border-radius: 999px; font-size: 9px; font-weight: 700; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .role-hr { color: #6941a5; background: #f4efff; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .role-director { color: var(--c-warn); background: var(--c-warn-bg); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .role-system { color: var(--c-muted); background: #f0f2f6; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .role-manager { color: #3156a8; background: #edf2ff; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .role-accountant { color: var(--c-ok); background: var(--c-ok-bg); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .role-employee { color: var(--c-muted); background: #f0f2f6; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .request-badge.leave { color: var(--c-info); background: var(--c-info-bg); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .request-badge.ot { color: var(--c-warn); background: var(--c-warn-bg); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .status-toggle.on { color: var(--c-ok); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .status-toggle.on span { background: #27ae79; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .status-toggle.off { color: var(--c-muted); }
+
+/* ---------- Duyệt đơn ---------- */
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .approval-card { border: 1px solid var(--c-border); border-radius: 10px; background: var(--c-surface); box-shadow: 0 1px 2px rgba(23, 32, 62, .04); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .approval-chain { border: 1px solid #eef0f5; background: #fafbfe; color: var(--c-muted); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .approval-actions { border-top-color: var(--c-border); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .approval-summary { color: var(--c-warn); border: 1px solid #f2dfbb; background: var(--c-warn-bg); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .result-approved { color: var(--c-ok); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .result-rejected { color: var(--c-danger); }
+
+/* ---------- Modal ---------- */
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .modal-backdrop { background: rgba(15, 23, 42, .48); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .modal { border: 1px solid var(--c-border); border-radius: 12px; background: var(--c-surface); box-shadow: 0 24px 70px rgba(15, 23, 42, .22); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .modal-header { border-bottom: 1px solid var(--c-border); padding-bottom: 14px; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .modal-header h2 { color: var(--c-text); font-size: 16px; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .modal-body input,
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .modal-body select,
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .modal-body textarea { font-size: 12px; } /* chặn font-size 10px từ dashboard.css */
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .modal-body input[type="checkbox"],
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .modal-body input[type="radio"] { width: auto; min-height: 0; padding: 0; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .modal-note,
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .column-guide code { border-color: #dfe5ef; color: var(--c-muted); background: #f8fafc; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .inline-error { color: var(--c-danger); border-color: #f0c4cb; background: var(--c-danger-bg); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .empty-state { color: var(--c-muted); border-color: var(--c-border); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .empty-state h3 { color: var(--c-text); }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1050px) {
+  :is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) { grid-template-columns: 224px minmax(0, 1fr); }
+  :is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+}
+
+@media (max-width: 820px) {
+  :is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) { display: block; }
+  :is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .sidebar-wrap { position: static; }
+  :is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .sidebar { position: static; width: 100%; height: auto; padding: 16px; }
+  :is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .brand { padding: 0 7px 14px; }
+  :is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .nav-label,
+  :is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .sidebar-bottom { display: none; }
+  :is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) nav { grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); }
+  :is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .nav-item { justify-content: center; padding: 0 8px; font-size: 10px; }
+  :is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .main-area { padding: 0 17px 30px; }
+  :is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .topbar { min-height: 60px; padding: 10px 0; }
+  :is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .content-wrap { padding: 22px 0 0; }
+}
+
+@media (max-width: 480px) {
+  :is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .top-actions { display: none; }
+  :is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .stats-grid { grid-template-columns: minmax(0, 1fr); }
+  :is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .page-heading,
+  :is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .page-intro { align-items: flex-start; flex-direction: column; }
+  :is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .page-heading .primary-button,
+  :is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .toolbar .secondary-button { width: 100%; }
+  :is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .approval-list,
+  :is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .permission-grid { grid-template-columns: minmax(0, 1fr); }
+  :is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .form-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* =====================================================================
+   Dashboard HR: hero chào, Truy cập nhanh, Đơn cần ghi nhận, Bảo mật
+   (selector dựa trên class đã biết + cấu trúc con, không phụ thuộc tên class lạ)
+   ===================================================================== */
+
+/* Hero chào mừng */
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) :is([class*="hero"], [class*="welcome"]):not(:is([class*="hero"], [class*="welcome"]) *) { position: relative; overflow: hidden; margin: 0 0 16px; padding: 26px 28px; border: 1px solid var(--c-border); border-radius: 12px; background: linear-gradient(135deg, var(--c-primary-soft), var(--c-surface) 62%); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) :is([class*="hero"], [class*="welcome"]) h2 { margin: 8px 0 6px; color: var(--c-text); font-size: 24px; font-weight: 760; letter-spacing: -.04em; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) :is([class*="hero"], [class*="welcome"]) p { max-width: 560px; margin: 0 0 16px; color: var(--c-muted); font-size: 13px; line-height: 1.6; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) :is([class*="hero"], [class*="welcome"]) p b,
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) :is([class*="hero"], [class*="welcome"]) p strong { color: var(--c-text); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) :is([class*="hero"], [class*="welcome"]) button { display: inline-flex; align-items: center; gap: 8px; min-height: 37px; padding: 0 14px; border: 1px solid var(--c-primary); border-radius: 7px; color: #fff; background: var(--c-primary); font-size: 12px; font-weight: 650; cursor: pointer; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) :is([class*="hero"], [class*="welcome"]) button:hover { border-color: var(--c-primary-hover); background: var(--c-primary-hover); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) :is([class*="hero"], [class*="welcome"]) > svg { position: absolute; top: 50%; right: 32px; width: 110px; height: 110px; color: var(--c-primary); opacity: .09; transform: translateY(-50%); pointer-events: none; }
+
+/* Khung chung cho 3 thẻ */
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) :is(.quick-card, .recent-card, .security-card) { margin: 0 0 16px; padding: 20px; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) :is(.quick-card, .recent-card, .security-card) > :first-child { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) :is(.quick-card, .recent-card, .security-card) > :first-child b,
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) :is(.quick-card, .recent-card, .security-card) > :first-child h2,
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) :is(.quick-card, .recent-card, .security-card) > :first-child h3 { display: block; color: var(--c-text); font-size: 15px; font-weight: 720; letter-spacing: -.02em; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) :is(.quick-card, .recent-card, .security-card) > :first-child span,
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) :is(.quick-card, .recent-card, .security-card) > :first-child p { display: block; margin: 3px 0 0; color: var(--c-muted); font-size: 11px; }
+
+/* Truy cập nhanh */
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .quick-card > :first-child > button { display: grid; width: 30px; height: 30px; flex: 0 0 30px; place-items: center; padding: 0; border: 1px solid var(--c-border); border-radius: 8px; color: var(--c-muted); background: var(--c-surface); cursor: pointer; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .quick-card > :first-child > button:hover { border-color: var(--c-primary); color: var(--c-primary-text); }
+
+/* Đơn cần ghi nhận */
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .recent-card > :first-child > :is(button, a) { padding: 0; border: 0; color: var(--c-primary-text); background: transparent; font-size: 11px; font-weight: 700; white-space: nowrap; cursor: pointer; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .recent-card > :first-child > :is(button, a):hover { text-decoration: underline; }
+
+/* Bảo mật tài khoản */
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .security-card > svg,
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .security-card > :nth-child(2) > svg:first-child { width: 38px; height: 38px; padding: 9px; border-radius: 10px; color: var(--c-ok); background: var(--c-ok-bg); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .security-card :is(div, p):has(> span + :is(b, strong)) { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 0; border-top: 1px solid #eef0f5; color: var(--c-muted); font-size: 12px; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .security-card :is(div, p):has(> span + :is(b, strong)) > :is(b, strong) { color: var(--c-ok); font-weight: 700; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .security-card p { margin: 6px 0 12px; color: var(--c-muted); font-size: 12px; }
+
+@media (max-width: 620px) {
+  :is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) :is([class*="hero"], [class*="welcome"]) { padding: 20px; }
+}
+
+/* =====================================================================
+   Trang Duyệt phép & OT + Phân quyền & liên kết + khung thẻ chung
+   ===================================================================== */
+
+/* Badge dùng chung */
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .role-badge,
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .request-badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 9px; white-space: nowrap; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .request-badge svg { width: 11px; height: 11px; }
+
+/* Khung thẻ chung (trừ stat/approval/help/user/table) */
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) :where(.main-area [class$="-card"]:not(.stat-card, .approval-card, .help-card, .user-card, .table-card, [class*="hero"], [class*="welcome"])) { position: relative; margin: 0 0 16px; padding: 20px; border: 1px solid var(--c-border); border-radius: 10px; background: var(--c-surface); box-shadow: 0 1px 2px rgba(23, 32, 62, .04); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) :where(.main-area [class$="-card"]:not(.stat-card, .approval-card, .help-card, .user-card, .table-card, [class*="hero"], [class*="welcome"])) > :first-child { margin-bottom: 14px; padding: 0; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) :where(.main-area [class$="-card"]:not(.stat-card, .approval-card, .help-card, .user-card, .table-card, [class*="hero"], [class*="welcome"])) > :first-child :is(b, h2, h3) { display: block; color: var(--c-text); font-size: 15px; font-weight: 720; letter-spacing: -.02em; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) :where(.main-area [class$="-card"]:not(.stat-card, .approval-card, .help-card, .user-card, .table-card, [class*="hero"], [class*="welcome"])) > :first-child span { display: block; margin-top: 3px; color: var(--c-muted); font-size: 11px; }
+
+/* Phần tử thứ 2 của thẻ (icon hoặc nút) -> góc phải trên */
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) :where(.main-area [class$="-card"]:not(.stat-card, .approval-card, .help-card, .user-card, .table-card, [class*="hero"], [class*="welcome"])):not(.quick-card) > :first-child + :is(svg, button, a) { position: absolute; top: 20px; right: 20px; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) :where(.main-area [class$="-card"]:not(.stat-card, .approval-card, .help-card, .user-card, .table-card, [class*="hero"], [class*="welcome"])):not(.quick-card) > :first-child + svg { width: 34px; height: 34px; padding: 8px; border-radius: 9px; color: var(--c-primary-text); background: var(--c-primary-soft); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) :where(.main-area [class$="-card"]:not(.stat-card, .approval-card, .help-card, .user-card, .table-card, [class*="hero"], [class*="welcome"])):not(.quick-card) > :first-child + :is(button, a) { display: inline-flex; align-items: center; gap: 6px; padding: 0; border: 0; color: var(--c-primary-text); background: transparent; font-size: 11px; font-weight: 700; cursor: pointer; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) :where(.main-area [class$="-card"]:not(.stat-card, .approval-card, .help-card, .user-card, .table-card, [class*="hero"], [class*="welcome"])):not(.quick-card) > :first-child + :is(button, a):hover { text-decoration: underline; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .quick-card > :first-child + button { width: 30px; height: 30px; justify-content: center; border: 1px solid var(--c-border); border-radius: 8px; color: var(--c-muted); background: var(--c-surface); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .security-card > :first-child + svg { color: var(--c-ok); background: var(--c-ok-bg); }
+
+/* Nhóm nút dạng thẻ hành động (Thử lỗi API, v.v.) */
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) :where(.main-area [class$="-card"]:not(.stat-card, .approval-card, .help-card, .user-card, .table-card, [class*="hero"], [class*="welcome"])) div:has(> button + button):not(.recent-list) { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) :where(.main-area [class$="-card"]:not(.stat-card, .approval-card, .help-card, .user-card, .table-card, [class*="hero"], [class*="welcome"])) div:has(> button + button):not(.recent-list) > button { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; column-gap: 12px; row-gap: 2px; width: 100%; padding: 12px 14px; border: 1px solid var(--c-border); border-radius: 10px; color: var(--c-text); background: var(--c-surface); text-align: left; cursor: pointer; transition: border-color .18s ease, background .18s ease; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) :where(.main-area [class$="-card"]:not(.stat-card, .approval-card, .help-card, .user-card, .table-card, [class*="hero"], [class*="welcome"])) div:has(> button + button):not(.recent-list) > button:hover { border-color: var(--c-primary); background: var(--c-primary-soft); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) :where(.main-area [class$="-card"]:not(.stat-card, .approval-card, .help-card, .user-card, .table-card, [class*="hero"], [class*="welcome"])) div:has(> button + button):not(.recent-list) > button > :is(b, strong) { grid-column: 1; grid-row: 1; font-size: 12px; font-weight: 700; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) :where(.main-area [class$="-card"]:not(.stat-card, .approval-card, .help-card, .user-card, .table-card, [class*="hero"], [class*="welcome"])) div:has(> button + button):not(.recent-list) > button > span { grid-column: 1; grid-row: 2; color: var(--c-muted); font-size: 11px; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) :where(.main-area [class$="-card"]:not(.stat-card, .approval-card, .help-card, .user-card, .table-card, [class*="hero"], [class*="welcome"])) div:has(> button + button):not(.recent-list) > button > svg:last-child { grid-column: 2; grid-row: 1 / span 2; width: 16px; height: 16px; color: var(--c-muted); }
+
+/* Ma trận quyền */
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .permission-card table { width: 100%; margin-top: 4px; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .permission-card th:not(:first-child),
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .permission-card td:not(:first-child) { text-align: center; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .permission-card td { font-size: 12px; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .permission-card td svg { color: var(--c-ok); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .main-area [class*="demo"] { display: inline-flex; width: fit-content; align-items: center; margin: 0 0 14px; padding: 4px 10px; border-radius: 999px; color: var(--c-warn); background: var(--c-warn-bg); font-size: 10px; font-weight: 700; }
+
+/* Code mẫu */
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .code-card pre { margin: 12px 0 0; padding: 14px 16px; overflow-x: auto; border-radius: 8px; color: #e2e8f0; background: #1e293b; font-size: 12px; line-height: 1.7; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .code-card code { color: inherit; background: transparent; }
+
+/* Duyệt phép & OT */
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .approval-summary { display: inline-flex; align-items: center; gap: 8px; margin: 0 0 16px; padding: 8px 14px; border-radius: 8px; font-size: 12px; font-weight: 600; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .approval-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 560px), 1fr)); gap: 16px; margin-bottom: 16px; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .approval-card { display: grid; align-content: start; gap: 12px; padding: 18px 20px; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .approval-card > :first-child { display: flex; align-items: center; gap: 12px; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .approval-card > :first-child > :last-child:not(:first-child):has(.request-badge) { display: flex; align-items: center; gap: 6px; margin-left: auto; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .approval-card :is(b, strong) { color: var(--c-text); font-weight: 650; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .approval-card .avatar,
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .approval-card .mini-avatar { width: 38px; height: 38px; flex: 0 0 38px; font-size: 11px; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .approval-card :is(div, p, li):not(.approval-chain):has(> span:first-child + :is(b, strong)) { display: flex; gap: 12px; font-size: 12px; line-height: 1.5; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .approval-card :is(div, p, li):not(.approval-chain):has(> span:first-child + :is(b, strong)) > span:first-child { flex: 0 0 82px; color: var(--c-muted); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .approval-chain { padding: 10px 12px; border-radius: 8px; font-size: 11px; line-height: 1.6; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .approval-chain > span:first-child { margin-right: 10px; color: var(--c-primary-text); font-weight: 750; letter-spacing: .08em; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .approval-chain b { color: var(--c-text); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .approval-actions { display: flex; align-items: center; justify-content: flex-end; gap: 8px; padding-top: 12px; border-top: 1px solid var(--c-border); }
+
+
+/* =====================================================================
+   Sửa theo ảnh: hero, Truy cập nhanh (tile là con trực tiếp), danh sách đơn, icon trong header
+   ===================================================================== */
+
+/* Hero: chữ trong hero không bị rule thẻ chung làm xuống dòng */
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) :is([class*="hero"], [class*="welcome"]) p :is(b, strong, span) { display: inline; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) :is([class*="hero"], [class*="welcome"]) :is([class*="hero"], [class*="welcome"]) {
+  position: absolute; top: 50%; right: 28px;
+  display: grid; width: 120px; height: 120px; margin: 0; padding: 0; place-items: center;
+  border: 0; border-radius: 0; background: none; box-shadow: none; overflow: visible;
+  opacity: .1; transform: translateY(-50%); pointer-events: none;
+}
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) :is([class*="hero"], [class*="welcome"]) :is([class*="hero"], [class*="welcome"]) svg { width: 100%; height: 100%; color: var(--c-primary); }
+
+/* Truy cập nhanh: header + các tile là con trực tiếp của thẻ */
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .quick-card { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .quick-card > :first-child { grid-column: 1 / -1; margin-bottom: 2px; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .quick-card > :not(:first-child) {
+  display: grid; grid-template-columns: 38px minmax(0, 1fr) auto; grid-template-rows: auto auto;
+  align-items: center; column-gap: 12px; row-gap: 2px; width: 100%; min-width: 0; margin: 0; padding: 14px;
+  border: 1px solid var(--c-border); border-radius: 10px; color: var(--c-text); background: var(--c-surface);
+  text-align: left; text-decoration: none; cursor: pointer; transition: border-color .18s ease, background .18s ease;
+}
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .quick-card > :not(:first-child):hover { border-color: var(--c-primary); background: var(--c-primary-soft); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .quick-card > :not(:first-child) > :first-child { grid-column: 1; grid-row: 1 / span 2; width: 38px; height: 38px; padding: 9px; border-radius: 10px; color: var(--c-primary-text); background: var(--c-primary-soft); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .quick-card > :not(:first-child) > :is(b, strong) { grid-column: 2; grid-row: 1; font-size: 13px; font-weight: 700; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .quick-card > :not(:first-child) > span { grid-column: 2; grid-row: 2; color: var(--c-muted); font-size: 11px; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .quick-card > :not(:first-child) > svg:last-child { grid-column: 3; grid-row: 1 / span 2; width: 16px; height: 16px; padding: 0; background: none; color: var(--c-muted); }
+
+/* Icon nằm trong header (khiên bảo mật, v.v.) */
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) :where(.main-area [class$="-card"]:not(.stat-card, .approval-card, .help-card, .user-card, .table-card, [class*="hero"], [class*="welcome"])) > :first-child > svg:last-child:not(:first-child) { flex: 0 0 34px; width: 34px; height: 34px; padding: 8px; border-radius: 9px; color: var(--c-primary-text); background: var(--c-primary-soft); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .security-card > :first-child > svg:last-child:not(:first-child) { color: var(--c-ok); background: var(--c-ok-bg); }
+
+/* Đơn cần ghi nhận: hàng = phần tử có avatar là con trực tiếp */
+
+@media (max-width: 620px) {
+  :is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .quick-card { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* =====================================================================
+   Bảng nhân sự, nhóm avatar + tên, hàng "Đã xử lý gần đây"
+   ===================================================================== */
+
+/* Nhóm "avatar + khối tên" dùng chung (bảng nhân sự, đầu thẻ duyệt đơn, v.v.) */
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) :where(.main-area :is(div, span, a, li):not(.top-user):has(> :is(.avatar, .mini-avatar))) { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; column-gap: 12px; row-gap: 0; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) :where(.main-area :is(div, span, a, li):not(.top-user):has(> :is(.avatar, .mini-avatar))) > :is(.avatar, .mini-avatar) { grid-row: 1 / span 2; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) :where(.main-area :is(div, span, a, li):not(.top-user):has(> :is(.avatar, .mini-avatar))) > :not(.avatar):not(.mini-avatar) { grid-column: 2; min-width: 0; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) :where(.main-area :is(div, span, a, li):not(.top-user):has(> :is(.avatar, .mini-avatar))) :is(b, strong) { display: block; color: var(--c-text); font-size: 12px; font-weight: 650; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) :where(.main-area :is(div, span, a, li):not(.top-user):has(> :is(.avatar, .mini-avatar))) span { display: block; margin-top: 3px; color: var(--c-muted); font-size: 11px; }
+
+/* Bảng */
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) table { width: 100%; border-collapse: collapse; text-align: left; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) th { text-align: left; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .table-title { display: flex; align-items: center; justify-content: flex-start; gap: 10px; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .table-title > :last-child:not(:first-child) { margin-left: auto; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .table-title b { font-size: 13px; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .table-title span { margin-left: 8px; font-size: 11px; font-weight: 500; }
+
+/* Nút trạng thái (Hoạt động / Đã khóa) */
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .status-toggle { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border: 0; border-radius: 999px; font-size: 10px; font-weight: 700; white-space: nowrap; cursor: pointer; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .status-toggle span { display: inline-block; width: 6px; height: 6px; flex: 0 0 6px; border-radius: 50%; background: currentColor; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .status-toggle.on { color: var(--c-ok); background: var(--c-ok-bg); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .status-toggle.off { color: var(--c-muted); background: #f0f2f6; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .status-toggle.on span { background: #27ae79; }
+
+/* Thẻ "Đã xử lý gần đây": bỏ padding thừa của header cũ */
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .recent-card :is(.table-card-header, .subpage-card-header, .panel__head) { padding: 0 0 14px; border-bottom: 0; }
+
+/* Hàng không có avatar: thời gian | tên | loại đơn | kết quả | ghi chú */
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .recent-card :is(div, li, button, a):has(> .request-badge):not(:has(:is(.avatar, .mini-avatar))) {
+  display: grid; grid-template-columns: 92px minmax(120px, 210px) auto auto minmax(0, 1fr); align-items: center; gap: 16px;
+  width: 100%; padding: 14px 0; border: 0; border-top: 1px solid #eef0f5; background: transparent; text-align: left;
+}
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .recent-card :is(div, li, button, a):has(> .request-badge):not(:has(:is(.avatar, .mini-avatar))) > :nth-child(1) { color: var(--c-muted); font-size: 12px; white-space: nowrap; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .recent-card :is(div, li, button, a):has(> .request-badge):not(:has(:is(.avatar, .mini-avatar))) > :nth-child(2) { color: var(--c-text); font-size: 12px; font-weight: 650; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .recent-card :is(div, li, button, a):has(> .request-badge):not(:has(:is(.avatar, .mini-avatar))) > :nth-child(4) { color: var(--c-muted); font-size: 11px; font-weight: 650; white-space: nowrap; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .recent-card :is(div, li, button, a):has(> .request-badge):not(:has(:is(.avatar, .mini-avatar))) > :nth-child(5) { min-width: 0; color: var(--c-muted); font-size: 11px; line-height: 1.5; }
+
+
+/* =====================================================================
+   Sửa theo ảnh: tile Truy cập nhanh, hàng "Đơn cần ghi nhận", modal tạo tài khoản
+   ===================================================================== */
+
+/* Tile Truy cập nhanh: chặn mọi CSS lạ làm tile bị co nhỏ/lệch */
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .quick-card > :not(:first-child) { position: static !important; inset: auto !important; transform: none !important; width: 100% !important; min-width: 0 !important; max-width: none !important; height: auto !important; min-height: 0 !important; margin: 0 !important; display: grid !important; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .quick-card > :not(:first-child) > div { grid-column: 2; grid-row: 1 / span 2; min-width: 0; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .quick-card > :not(:first-child) > div :is(b, strong) { display: block; color: var(--c-text); font-size: 13px; font-weight: 700; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .quick-card > :not(:first-child) > div span { display: block; margin-top: 3px; color: var(--c-muted); font-size: 11px; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .quick-card > :not(:first-child) > :first-child { position: static; margin: 0; }
+
+/* Hàng danh sách: [nhóm avatar + tên] [badge] [ngày] [mũi tên] */
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .recent-card :is(div, button, a, li):has(> :first-child > :is(.avatar, .mini-avatar)) {
+  display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 0; border: 0; border-top: 1px solid #eef0f5;
+  color: var(--c-text); background: transparent; text-align: left; cursor: pointer; transition: background .15s ease;
+}
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .recent-card :is(div, button, a, li):has(> :first-child > :is(.avatar, .mini-avatar)):hover { background: color-mix(in srgb, var(--c-primary-soft) 55%, transparent); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .recent-card :is(div, button, a, li):has(> :first-child > :is(.avatar, .mini-avatar)) > :first-child { flex: 1 1 auto; min-width: 0; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .recent-card :is(div, button, a, li):has(> :first-child > :is(.avatar, .mini-avatar)) > :not(:first-child):not(.request-badge) { display: flex; align-items: center; gap: 10px; flex: 0 0 auto; color: var(--c-muted); font-size: 11px; white-space: nowrap; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .recent-card :is(div, button, a, li):has(> :first-child > :is(.avatar, .mini-avatar)) > :not(:first-child) { flex: 0 0 auto; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .recent-card :is(div, button, a, li):has(> :first-child > :is(.avatar, .mini-avatar)) > :not(:first-child) :where(span, time, div, small):not(.request-badge) { color: var(--c-muted); font-size: 11px; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .recent-card :is(div, button, a, li):has(> :first-child > :is(.avatar, .mini-avatar)) svg { flex: 0 0 16px; width: 16px; height: 16px; color: var(--c-muted); }
+
+/* Modal (tạo tài khoản, từ chối đơn, v.v.) */
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .modal-backdrop { position: fixed; z-index: 20; inset: 0; display: grid; overflow-y: auto; place-items: center; padding: 24px; backdrop-filter: blur(3px); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .modal { width: min(620px, 100%); max-height: calc(100dvh - 48px); margin: auto; overflow-y: auto; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .modal :is(form, .modal-form) { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 16px; padding: 20px 24px; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .modal :is(form, .modal-form) > :not(.primary-button, .secondary-button, .danger-button, .reject-button):not(:has(> :is(.primary-button, .danger-button))) { flex: 0 0 100%; min-width: 0; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .modal :is(form, .modal-form) > :has(> :is(.primary-button, .danger-button)) { display: flex; flex: 0 0 100%; justify-content: flex-end; gap: 8px; padding-top: 14px; border-top: 1px solid var(--c-border); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .modal .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .modal label { display: grid; gap: 6px; min-width: 0; color: var(--c-text); font-size: 11px; font-weight: 650; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .modal :is(input, select, textarea):not([type="checkbox"], [type="radio"]) { width: 100%; height: 38px; padding: 0 11px; border: 1px solid var(--c-border); border-radius: 7px; outline: 0; color: var(--c-text); background: var(--c-surface); font-size: 13px; font-weight: 400; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .modal textarea { height: auto; min-height: 90px; padding: 10px 11px; resize: vertical; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .modal-note { display: flex; align-items: flex-start; gap: 9px; padding: 11px 12px; border: 1px solid #dfe5ef; border-radius: 8px; font-size: 11px; line-height: 1.55; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .modal-note svg { flex: 0 0 auto; margin-top: 2px; }
+
+@media (max-width: 620px) {
+  :is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .modal .form-grid { grid-template-columns: minmax(0, 1fr); }
+  :is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .modal :is(form, .modal-form) { padding: 16px; }
+}
+
+
+/* =====================================================================
+   Tile Truy cập nhanh: khối chữ (tiêu đề + mô tả) là phần tử thứ 2, xếp 2 dòng
+   ===================================================================== */
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .quick-card > :not(:first-child) > :nth-child(2):not(svg) { grid-column: 2; grid-row: 1 / span 2; min-width: 0; color: var(--c-text); font-size: inherit; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .quick-card > :not(:first-child) > :nth-child(2):not(svg) :is(b, strong) { display: block; color: var(--c-text); font-size: 13px; font-weight: 700; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .quick-card > :not(:first-child) > :nth-child(2):not(svg) span { display: block; margin-top: 3px; color: var(--c-muted); font-size: 11px; font-weight: 400; }
+
+/* =====================================================================
+   Modal: không phụ thuộc có <form> hay không. Mọi con trực tiếp của .modal
+   (ghi chú, lưới form, nút) đều được thụt 24px và nút nằm bên phải.
+   ===================================================================== */
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .modal { display: flex; flex-wrap: wrap; align-content: flex-start; justify-content: flex-end; column-gap: 8px; row-gap: 16px; padding-bottom: 20px; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .modal > * { flex: 0 0 auto; min-width: 0; margin: 0 24px; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .modal > :not(.modal-header, header, .primary-button, .secondary-button, .danger-button, .reject-button) { flex: 0 0 calc(100% - 48px); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .modal > :is(.modal-header, header) { flex: 0 0 100%; margin: 0; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .modal > :is(.primary-button, .secondary-button, .danger-button, .reject-button) { margin: 0; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .modal > :is(.primary-button, .danger-button):last-child { margin-right: 24px; }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .modal > :has(> :is(.primary-button, .danger-button)) { display: flex; justify-content: flex-end; gap: 8px; padding-top: 14px; border-top: 1px solid var(--c-border); }
+:is(.hr-admin-shell, .app-shell[data-role="HR_Admin" i]) .modal > .form-grid { margin-top: 0; }
+
+/* Live HR panels share the spacing, surfaces and green accent of employee/manager. */
+.hr-admin-shell .hr-sync-bar { display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:20px; color:var(--c-muted); font-size:12px; }
+.hr-admin-shell .inline-error { display:flex; align-items:center; flex-wrap:wrap; gap:12px; padding:14px 18px; margin-bottom:18px; border:1px solid #f0c8ce; border-radius:12px; background:#fff3f4; color:#a63147; font-size:13px; line-height:1.6; }
+.hr-admin-shell .inline-error button { border:1px solid #e4aab5; border-radius:8px; background:white; padding:7px 12px; color:inherit; font:inherit; cursor:pointer; }
+.hr-admin-shell .hr-request-filters { display:flex; flex-wrap:wrap; gap:12px; margin:20px 0; }
+.hr-admin-shell .hr-request-filters input { flex:1; min-width:200px; }
+.hr-admin-shell .hr-request-filters :is(input,select) { border:1px solid var(--c-border); border-radius:10px; padding:11px 14px; background:var(--c-surface); color:var(--c-text); }
+.hr-admin-shell .hr-request-table { overflow-x:auto; border:1px solid var(--c-border); border-radius:16px; background:var(--c-surface); }
+.hr-admin-shell .hr-request-table table { width:100%; min-width:850px; border-collapse:collapse; }
+.hr-admin-shell .hr-request-table :is(th,td) { padding:16px; text-align:left; border-bottom:1px solid var(--c-border); font-size:13px; }
+.hr-admin-shell .hr-request-table th { background:var(--c-bg); color:var(--c-muted); font-size:11px; text-transform:uppercase; letter-spacing:.05em; }
+.hr-admin-shell .hr-request-table td small { display:block; margin-top:7px; color:var(--c-muted); }
+.hr-admin-shell .hr-row-actions { display:flex; flex-wrap:wrap; gap:8px; }
+.hr-admin-shell .hr-decision-body { padding:20px; line-height:1.7; }
+.hr-admin-shell .modal .hr-decision-body { padding:0; }
+.hr-admin-shell .hr-decision-body label { display:grid; gap:8px; margin-top:16px; }
+.hr-admin-shell .hr-decision-body textarea { min-height:110px; resize:vertical; width:100%; border:1px solid var(--c-border); border-radius:10px; padding:12px; font:inherit; }
+.hr-admin-shell .hr-import-results { max-height:220px; overflow:auto; padding-left:20px; font-size:13px; }
+.hr-admin-shell button:disabled { opacity:.5; cursor:not-allowed; }
+.hr-admin-shell :is(button,input,select,textarea):focus-visible { outline:3px solid #aab4ff; outline-offset:2px; }
+.hr-admin-shell .hr-pagination { display:flex; align-items:center; justify-content:flex-end; gap:12px; padding:16px; }
+@media(max-width:700px) {
+  .hr-admin-shell .hr-request-filters > * { width:100%; }
+  .hr-admin-shell .hr-sync-bar { align-items:flex-start; }
+  .hr-admin-shell .hr-decision-body { overflow-x:auto; }
+}
