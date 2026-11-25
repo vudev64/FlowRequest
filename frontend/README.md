@@ -1,116 +1,100 @@
-# FlowRequest — Demo và Production
+# FlowRequest
 
-Hai môi trường dùng chung code, 6 role và workflow. Chúng chạy bằng hai tiến trình Backend và cấu hình độc lập. Không có thao tác reset, xóa, sao chép database hoặc seed tài khoản mẫu khi khởi động Production.
+FlowRequest giúp nhân viên gửi đề xuất và theo dõi đơn từ lúc tạo đến khi có quyết định. Người duyệt thấy các đơn thuộc thẩm quyền của mình. Với đơn mua sắm, kế toán còn có thể theo dõi ngân sách, ghi nhận số tiền thực trả và tra lại chứng từ.
 
-## Trạng thái hiện tại: chỉ sử dụng Demo
+Bản Demo có trang đăng nhập nhanh tại `/dang-nhap-demo`. Để thử một quy trình, hãy dùng tài khoản Nhân viên tạo đơn, chuyển sang Quản lý để duyệt rồi quay lại tài khoản Nhân viên để xem trạng thái và lịch sử. Các thao tác trên Demo được lưu vào database của Demo.
 
-Production đang tạm dừng: `backend/.env.production` có `PRODUCTION_ENABLED=false`, `frontend/.env.local` có `VITE_ENABLE_PRODUCTION=false` và `VITE_APP_ENV=demo`. Các URI, JWT, storage, thông tin bootstrap đã cấu hình được giữ lại. Không xóa database, tài khoản, dữ liệu hoặc file mật khẩu.
+## Sáu vai trò
 
-- Backend: `npm start` hoặc `npm run dev` khởi chạy Demo; Production start/bootstrap bị chặn trước khi kết nối MongoDB.
-- Frontend: `npm run dev`, `npm run build`, `npm run preview` mặc định dùng Demo. `/login` và các workspace dùng API, token Demo; `/dang-nhap-demo` vẫn có đủ 6 tài khoản. Không có nút đăng nhập thực tế hoặc proxy sang Production.
-- Các file `.env.production.example` được giữ làm mẫu. Chỉ khi chủ động triển khai lại mới đổi `PRODUCTION_ENABLED=true`, `VITE_ENABLE_PRODUCTION=true`, bỏ override `VITE_APP_ENV=demo` trong `.env.local`, rồi chạy các lệnh Production riêng sau khi kiểm tra cấu hình.
-
-Các mục dưới mô tả khả năng triển khai hai môi trường khi Production được bật lại.
-
-## 1. Giữ Demo hiện tại
-
-Trong `backend`, `npm run start:demo` vẫn đọc `.env` hiện tại nếu chưa có `.env.demo`. Sáu tài khoản mẫu, mật khẩu, database và đường dẫn `uploads`/`private-vouchers` cũ được giữ nguyên. Không chép mẫu `.env.demo.example` rỗng đè lên cấu hình đang hoạt động.
-
-Trong `frontend`:
-
-```sh
-npm run dev:demo
-npm run build:demo
-```
-
-`npm run build` và `npm run build:demo` xuất Demo vào `frontend/dist`. Khi Production được bật lại, `npm run build:production` xuất vào `frontend/dist-production`.
-
-Trang `/login` mặc định đăng nhập thực tế. Nút **Trải nghiệm Demo** mở `/demo/dang-nhap-demo`, nơi duy nhất hiển thị 6 tài khoản mẫu. Toàn bộ workspace Demo nằm dưới `/demo/*`; nút **Quay lại đăng nhập thực tế** tải lại `/login`. Mỗi lần chuyển tải lại ứng dụng để chọn lại API và phiên đăng nhập, không dùng token của môi trường còn lại.
-
-## 2. Chuẩn bị Production
-
-1. Cấp một database user MongoDB riêng, chỉ có quyền đọc/ghi database Production; không dùng `readWriteAnyDatabase` hoặc tài khoản quản trị cluster. Nếu dùng chung cluster, user Production phải khác user Demo. Cấu hình quyền phải được xác nhận tại Atlas hoặc máy chủ MongoDB; code không thay thế được quyền hạ tầng.
-2. Dùng một database Production mới, rỗng, trên MongoDB replica set/Atlas có hỗ trợ transaction. Không clone database Demo. Production từ chối bootstrap vào database đã có dữ liệu chưa được định danh Production.
-3. Sao chép `backend/.env.production.example` thành `backend/.env.production` và điền các giá trị thật. File này bị Git bỏ qua. Backend Production không đọc dự phòng từ `.env` Demo.
-4. Chọn khóa `PRODUCTION_JWT_SECRET` ngẫu nhiên ít nhất 32 byte, khác Demo. Có thể tạo một khóa mới bằng `node -e "process.stdout.write(require('node:crypto').randomBytes(48).toString('base64url'))"`; chuyển đầu ra vào secret manager, không commit hoặc gửi qua chat.
-5. `PRODUCTION_STORAGE_ROOT` là đường dẫn tuyệt đối trên ổ lưu bền vững, tách khỏi cả hai thư mục tệp Demo. Ví dụ đường dẫn: `D:/FlowRequestData/production` hoặc `/var/lib/flowrequest/production`. Backend tạo `uploads` và `private-vouchers` bên trong. Không mount các thư mục này vào public webroot.
-6. `PRODUCTION_ALLOWED_ORIGINS` là danh sách origin website Production, phân cách dấu phẩy, không có đường dẫn hay dấu `/` cuối. Khóa email Production dùng biến `PRODUCTION_RESEND_API_KEY` riêng; không tự dùng khóa Demo.
-
-Không đặt URI MongoDB, mật khẩu, JWT hoặc khóa email vào biến `VITE_*`: chúng sẽ xuất hiện trong bản build trình duyệt.
-
-## 3. Khởi tạo SYSTEM_ADMIN đầu tiên qua Backend
-
-Điền `PRODUCTION_BOOTSTRAP_NAME`, `PRODUCTION_BOOTSTRAP_EMAIL` và `PRODUCTION_BOOTSTRAP_DEPARTMENT` bằng thông tin thật. Phòng ban ban đầu cũng giúp danh sách cấp tài khoản có dữ liệu thực khi doanh nghiệp chưa có nhân sự khác.
-
-Lưu mật khẩu đầu tiên trong một file bí mật một dòng nằm ngoài repository, thư mục tệp nghiệp vụ và public webroot. File chỉ cấp quyền đọc cho tài khoản vận hành; trên Linux dùng quyền `600`/`400`, trên Windows đặt ACL tương ứng hoặc dùng secret mount của nền tảng. Khai báo đường dẫn tuyệt đối trong `PRODUCTION_BOOTSTRAP_PASSWORD_FILE`. Mật khẩu phải có ít nhất 12 ký tự, chữ hoa, chữ thường, số, ký tự đặc biệt, tối đa 72 byte.
-
-Chạy trong `backend`:
-
-```sh
-npm run bootstrap:production
-npm run start:production
-```
-
-Bootstrap không có endpoint HTTP công khai, không nhận mật khẩu từ tham số dòng lệnh và không in mật khẩu. Một transaction tạo SYSTEM_ADMIN đầu tiên, khóa bootstrap, định danh môi trường và audit. Chạy lại hoặc hai lần đồng thời không được tạo thêm SYSTEM_ADMIN. Nếu audit thất bại, transaction rollback. Không tạo HR, Director, nhân viên, đơn từ hoặc ngân sách mẫu.
-
-Sau khi thành công, bỏ các biến bootstrap và secret mount bootstrap khỏi dịch vụ Backend chạy thường trực. Giữ mật khẩu admin trong nơi lưu bí mật được kiểm soát. Không chạy lại bootstrap để reset mật khẩu hoặc khôi phục tài khoản.
-
-Hai môi trường cùng áp dụng quyền cấp tài khoản:
-
-| Người cấp | Role được tạo |
+| Vai trò | Công việc trong FlowRequest |
 | --- | --- |
-| Bootstrap Production | SYSTEM_ADMIN đầu tiên |
-| SYSTEM_ADMIN | HR_ADMIN, DIRECTOR |
-| HR_ADMIN | EMPLOYEE, MANAGER, ACCOUNTANT |
+| Nhân viên (`EMPLOYEE`) | Lưu nháp, gửi đơn, đính kèm tài liệu và xem kết quả xử lý đơn của mình. |
+| Quản lý (`MANAGER`) | Xem chi tiết, duyệt hoặc từ chối đơn được giao. Quản lý cũng có thể gửi đề xuất của mình lên Giám đốc. |
+| Nhân sự (`HR_ADMIN`) | Xử lý đơn nghiệp vụ nhân sự, xem lịch sử duyệt, quản lý nhân viên và cấp tài khoản Nhân viên, Quản lý, Kế toán. |
+| Kế toán (`ACCOUNTANT`) | Duyệt bước tài chính, quản lý ngân sách phòng ban, gửi yêu cầu bổ sung ngân sách và ghi nhận thanh toán kèm chứng từ. |
+| Giám đốc (`DIRECTOR`) | Duyệt đơn ở bước Giám đốc, quyết định yêu cầu tăng ngân sách, xem báo cáo và so sánh giá trị mua sắm theo tháng. |
+| Quản trị hệ thống (`SYSTEM_ADMIN`) | Cấp tài khoản Nhân sự và Giám đốc, quản lý cấu hình hệ thống, chính sách đăng nhập, tệp đính kèm và xem nhật ký thao tác. |
 
-SYSTEM_ADMIN hiện có vẫn được xem và quản lý theo các chốt bảo vệ cũ. API thông thường không tạo thêm SYSTEM_ADMIN. Các ngưỡng và thứ tự duyệt đơn không thay đổi. Trong Production, sáu địa chỉ tài khoản Demo được dành riêng và bị từ chối ở đăng nhập/cấp tài khoản.
+## Đơn đi qua những ai?
 
-Sau khi đăng nhập Production, cấp HR_ADMIN và DIRECTOR trước; HR cấp MANAGER, ACCOUNTANT và nhân viên, chỉ định quản lý trực tiếp. Nhập cấu hình doanh nghiệp, email và ngân sách thực tế trước khi đưa quy trình vào vận hành; hệ thống không tự tạo các dữ liệu này từ Demo.
+Bảng dưới mô tả luồng thông thường khi Nhân viên gửi đơn và từng người duyệt đồng ý. Nếu đơn bị từ chối, quy trình dừng tại bước đó. Với đơn do Quản lý tạo, Giám đốc duyệt bước đầu.
 
-## 4. Build Frontend Production
+| Loại đơn | Thứ tự duyệt |
+| --- | --- |
+| Nghỉ phép, tăng ca, điều chỉnh chấm công, tuyển dụng | Quản lý → Nhân sự |
+| Làm việc từ xa | Quản lý |
+| Công tác | Quản lý. Nếu có chi phí, đơn chuyển tiếp sang Kế toán. |
+| Đào tạo | Quản lý → Nhân sự. Nếu có chi phí, đơn chuyển tiếp sang Kế toán. |
+| Mua sắm dưới 50 triệu đồng | Quản lý → Kế toán |
+| Mua sắm từ 50 triệu đồng trở lên | Quản lý → Giám đốc → Kế toán |
 
-Sao chép `frontend/.env.production.example` thành `frontend/.env.production`. Đặt `VITE_APP_ENV=production`, `VITE_PRODUCTION_API_URL` trỏ tới API Production và `VITE_DEMO_API_URL` trỏ tới API Demo. Mặc định hai đường dẫn lần lượt là `/api` và `/demo-api`; chúng phải khác nhau. Chỉ đặt địa chỉ API công khai trong các biến này, không đặt URI MongoDB hoặc khóa bí mật.
+**Duyệt mua sắm và thanh toán là hai thời điểm riêng.** Khi một đơn mua sắm có chi phí được duyệt ở bước cuối, hệ thống kiểm tra phần ngân sách còn lại và ghi nhận khoản cam kết của phòng ban. Khi thực trả, Kế toán nhập số tiền, ngày trả và chứng từ. Một đơn có thể được trả nhiều lần trong phạm vi số tiền đã duyệt. Ví dụ, đơn đã duyệt 60 triệu và đã trả 20 triệu sẽ còn phải trả 40 triệu. Việc ghi nhận 20 triệu này không trừ ngân sách lần thứ hai.
+
+Khi cần tăng hạn mức phòng ban, Kế toán gửi yêu cầu bổ sung. Ngân sách chỉ tăng sau khi Giám đốc duyệt. [Quy tắc duyệt trong Backend](../backend/src/config/workflow.js)
+
+## Kiến trúc và công nghệ
+
+Trình duyệt chạy giao diện **React** và dùng **React Router** để chuyển giữa các trang. **Vite** phục vụ giao diện khi phát triển và tạo bản build. Giao diện gọi API của **Node.js/Express**. Backend kiểm tra người dùng, xử lý nghiệp vụ và dùng **Mongoose** để làm việc với **MongoDB**. Phần GridFS dùng driver MongoDB để đọc và ghi tệp.
+
+| Thư mục | Nội dung |
+| --- | --- |
+| [frontend/src](./src) | Trang giới thiệu, đăng nhập, sáu khu vực làm việc và mã gọi API. |
+| [backend/src](../backend/src) | Route API, phân quyền, xử lý đơn, ngân sách, thanh toán và mô hình dữ liệu. |
+| [frontend/test](./test) và [backend/test](../backend/test) | Kiểm thử giao diện, API, phân quyền và giao dịch MongoDB. |
+| [deploy/demo](../deploy/demo) | Hướng dẫn triển khai, cấu hình tham khảo và danh sách kiểm tra sau khi đưa Demo lên mạng. |
+
+### Bảo mật và chứng từ
+
+- Backend băm mật khẩu bằng bcrypt, xác thực phiên bằng JWT và kiểm tra quyền trên từng API. Khi tải chứng từ, Backend cũng kiểm tra người dùng có quyền xem đơn liên quan. Các thao tác như duyệt đơn, ghi nhận thanh toán và đổi cấu hình được ghi vào nhật ký.
+- Backend nhận tệp bằng Multer, kiểm tra dung lượng, đuôi tệp, kiểu MIME và phần đầu nội dung. Ở chế độ mặc định `local`, tệp đính kèm nằm trong `uploads/`, chứng từ thanh toán nằm trong `private-vouchers/` dưới thư mục lưu trữ của Backend.
+- Với `DEMO_STORAGE_DRIVER=gridfs`, Backend lưu tệp mới thành các phần nhỏ trong MongoDB. Mỗi tệp chịu mức thấp hơn giữa chính sách hệ thống và **2 MiB**. Kho Demo có ngân sách **100 MiB** tính cả phần dự phòng và cho phép tối đa **4 lượt ghi đang xử lý** trong cùng database.
+- Chứng từ thanh toán có mã kiểm tra **SHA-256**. Backend dùng khóa chống ghi trùng khi gửi lại yêu cầu và dùng transaction để cập nhật khoản đã trả, sổ thanh toán và audit cùng nhau. Khi bật GridFS, tệp Local cũ vẫn cần bản gốc hoặc bản sao GridFS đã được đối chiếu và liên kết theo đường dẫn cũ. Đổi cấu hình không tự di chuyển dữ liệu. [Cơ chế lưu tệp](../backend/src/services/DocumentStorage.js)
+
+## Chạy Demo trên máy
+
+Chuẩn bị **Node.js 22.21**, npm và một database MongoDB Demo có hỗ trợ transaction (Atlas hoặc replica set). Đăng nhập nhanh sử dụng sáu tài khoản đã có trong database Demo. Khởi động với một database trống sẽ không tự tạo sáu tài khoản này.
+
+**1. Cấu hình Backend.** Dùng `backend/.env.demo`, hoặc `backend/.env` nếu chưa có `.env.demo`. Nếu máy đã chạy được Demo, giữ cấu hình đang dùng.
+
+| Biến | Giá trị cần chuẩn bị |
+| --- | --- |
+| `DEMO_MONGO_URI`, `DEMO_DB_NAME` | Chuỗi kết nối và tên database Demo. Dùng tài khoản MongoDB có quyền giới hạn trong database này. |
+| `DEMO_JWT_SECRET` | Khóa ngẫu nhiên riêng cho Demo, tối thiểu 32 byte. |
+| `DEMO_STORAGE_DRIVER`, `DEMO_STORAGE_ROOT` | Trên máy có thể dùng mặc định `local`. Khai báo thư mục gốc nếu tệp hiện được lưu ở vị trí riêng. |
+
+**2. Mở terminal ở thư mục gốc** và chạy Backend.
 
 ```sh
-npm run build:production
+cd backend
+npm ci
+npm run dev
 ```
 
-Kết quả ở `frontend/dist-production`, không ghi đè bản Demo. Cấu hình web server phục vụ thư mục này, hỗ trợ SPA fallback cho cả `/demo/*` về `index.html`, proxy `/api` sang Backend Production và `/demo-api` sang `/api` của Backend Demo. Giữ header `X-FlowRequest-Environment`; Frontend Production từ chối phản hồi không được định danh Production và không thử lại bằng API Demo nếu Production lỗi. Không dùng `vite dev`/`vite preview` làm web server Production.
+**3. Mở terminal thứ hai ở thư mục gốc.** Nếu chưa có `frontend/.env.local`, dùng [mẫu cấu hình frontend Demo](./.env.demo.example). Mẫu chọn chế độ Demo, tắt giao diện Production và chuyển các yêu cầu `/demo-api` tới Backend local.
 
-Khi chạy cục bộ bằng `npm run dev` (cổng 3000) hoặc `npm run dev:production` (cổng 3001), Vite đã có proxy `/api` đến Backend Production cổng 5001 và `/demo-api` đến Backend Demo cổng 5000. Nếu Backend dùng địa chỉ khác, đặt hai biến API bằng địa chỉ tương ứng và cấu hình CORS cho origin giao diện. Proxy Vite chỉ phục vụ phát triển/kiểm tra; web server triển khai thật cần cấu hình tương tự.
+```sh
+cd frontend
+npm ci
+npm run dev:demo
+```
 
-Production không hiển thị bảng tài khoản Demo trong trang đăng nhập thực tế. Bấm Trải nghiệm Demo mới mở khu vực `/demo` với API, token và dữ liệu Demo. Phiên trình duyệt Production dùng key riêng, không lấy token/user đã lưu bởi Demo; URL `/demo-api` chỉ là đường dẫn proxy API, không phải workspace Demo. Test không có đường dẫn truy cập trong giao diện này và vẫn yêu cầu user/database/thư mục test độc lập.
+Mở [FlowRequest trên máy](http://localhost:3000) hoặc [trang đăng nhập nhanh](http://localhost:3000/dang-nhap-demo). Backend mặc định dùng cổng 5000. Đường dẫn [kiểm tra kết nối database](http://localhost:5000/health/ready) trả HTTP 200 khi MongoDB đã kết nối.
 
-## 5. Kiểm tra trước khi vận hành
+**Demo, Test và Production dùng cấu hình riêng.** Nếu sau này vận hành Production, cần chuẩn bị database, tài khoản MongoDB, khóa JWT và thư mục lưu trữ riêng. Backend có lệnh `npm run bootstrap:production` để khởi tạo System Admin đầu tiên bằng thông tin quản trị và file mật khẩu riêng. Khi chạy Demo, chỉ cần các bước trên. Giữ URI, khóa ký và mật khẩu ở phía Backend. Các biến `VITE_*` được đưa vào bản build và trình duyệt có thể đọc được.
 
-- `GET /health/ready` của từng Backend phải trả `200`, `ready: true` và đúng môi trường sau khi kết nối MongoDB.
-- Đăng nhập Demo chỉ đọc được dữ liệu Demo; gửi JWT Demo sang Production phải bị `401`, kể cả khi trùng ID người dùng. Kiểm tra tương tự chiều ngược lại.
-- Xác nhận database user Demo không có quyền đọc/ghi database Production ở MongoDB, và ngược lại.
-- Kiểm tra quyền cấp tài khoản qua cả giao diện lẫn API trực tiếp.
-- Thử upload/tải chứng từ trên môi trường kiểm thử riêng; tệp Production không xuất hiện trong thư mục Demo.
-- Sao lưu và diễn tập khôi phục cả MongoDB lẫn storage, cấu hình HTTPS/CORS, logging và giám sát. Không đóng gói `.env`, `.backups`, token hoặc chứng từ vào bản phát hành.
-- Chạy từ root dự án: `node --test backend/test/*.test.js frontend/test/*.test.js`. Bài tích hợp MongoDB chỉ chạy khi có đầy đủ cấu hình `backend/.env.test` riêng; xem `backend/test/README.md`. Không dùng URI Production/Demo cho kiểm thử ghi/xóa.
+## Kiểm thử
 
-Phần này chuẩn bị mã nguồn và cấu hình. Khi chưa có `.env.production` thật, bootstrap/start Production phải thất bại an toàn và không được tự chuyển sang Demo. Cần hoàn tất kiểm thử tích hợp trên hạ tầng mới trước khi công bố Production vận hành.
+| Chạy trong | Lệnh | Mục đích |
+| --- | --- | --- |
+| `frontend/` | `npm run lint`, `node --test test/*.test.js`, `npm run build:demo` | Kiểm tra mã giao diện, hành vi các trang và khả năng tạo bản build trong `dist/`. |
+| `backend/` | `npm test` | Chạy các bài kiểm thử Backend. Bài tích hợp MongoDB có thể được bỏ qua khi chưa có cấu hình Test. |
+| `backend/` | `npm run test:mongo:safety` rồi `npm run test:mongo` | Kiểm tra điều kiện an toàn, sau đó chạy API với MongoDB thật để kiểm tra duyệt đơn, ngân sách, thanh toán, quyền tải tệp và rollback. |
 
----
+Trước khi chạy bài có ghi MongoDB, chuẩn bị `backend/.env.test` với `FINANCE_TEST_URI`, `FINANCE_TEST_DB_NAME` và `FINANCE_TEST_STORAGE_ROOT`. Dùng database `flowrequest_test` để chạy cả nhóm GridFS, với user và thư mục tệp dành riêng cho Test. Bộ kiểm thử xác minh quyền, đánh dấu dữ liệu theo lượt chạy và chỉ dọn dữ liệu của lượt đó. [Hướng dẫn kiểm thử MongoDB](../backend/test/README.md)
 
-# Thông tin công cụ Frontend
+## Triển khai bản Demo
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
-
-Note: This will impact Vite dev & build performances.
-You can also try [the experimental native React Compiler support in plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md#rust-react-compiler) by using `compiler: true` in the plugin options instead of using the Babel plugin.
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+1. **Render — Backend.** Chọn Web Service Free, thư mục `backend`, lệnh build `npm ci --omit=dev` và lệnh chạy `npm run start:demo`. Đặt `FLOWREQUEST_ENV=demo`, `NODE_ENV=production`, cấu hình MongoDB và JWT trong phần biến môi trường của dịch vụ. Cấu hình này chạy **bản Demo** với các kiểm tra dành cho hosting công khai.
+2. **Atlas và tệp.** Cho phép kết nối từ các IP đi ra của dịch vụ Render đến Atlas. Chọn `DEMO_STORAGE_DRIVER=gridfs` và dùng `DEMO_STORAGE_ROOT` mà Backend có quyền ghi tệp tạm. Ổ đĩa của Render Free có thể mất tệp sau khi dịch vụ ngủ hoặc khởi động lại. Mẫu Render trong `deploy/demo` sử dụng gói Starter kèm ổ đĩa riêng. [Giới hạn Render Free](https://render.com/docs/free)
+3. **Vercel — Frontend.** Chọn thư mục `frontend`, lệnh build `npm run build:demo` và thư mục kết quả `dist`. Đặt `VITE_APP_ENV=demo`, `VITE_ENABLE_PRODUCTION=false` và `VITE_DEMO_API_URL` bằng địa chỉ HTTPS của Backend, kết thúc bằng `/api`. Quy tắc trong [vercel.json](./vercel.json) cho phép mở trực tiếp hoặc tải lại trang của từng vai trò.
+4. **Kiểm tra hai dịch vụ.** Đặt `DEMO_ALLOWED_ORIGINS` trên Render bằng đúng origin HTTPS của frontend Vercel. Kiểm tra `/health/ready` trên Backend, đăng nhập trên giao diện, mở lại một trang con và thử tải chứng từ bằng tài khoản có quyền. Nếu cần xác minh thao tác ghi, dùng dữ liệu kiểm thử đã được cho phép.
