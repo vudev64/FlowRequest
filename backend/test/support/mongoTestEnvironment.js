@@ -15,7 +15,11 @@ const runPattern = /^[a-f0-9]{32}$/;
 const gridCollections = ['flowdocuments.files', 'flowdocuments.chunks', 'flowdocumentquota'];
 export function gridTestOwnership(name, runId) {
   if (!runPattern.test(runId)) fail('Mã lượt test không hợp lệ.');
-  const reference = new RegExp('^(uploads|payment-vouchers)/gridfs-[a-f0-9-]{36}-test-' + runId + '-');
+  const generated = '^(uploads|payment-vouchers)/gridfs-[a-f0-9-]{36}-test-' + runId + '-';
+  // Legacy payment fixtures keep their local filename when copied. The run ID is their original basename.
+  const legacy = '^payment-vouchers/[0-9]{13}-[0-9]{1,39}-' + runId + '\\.pdf';
+  const ownerCollection = name === 'flowdocuments.files' || name === 'flowdocuments.chunks';
+  const reference = new RegExp(generated + '|' + legacy + (ownerCollection ? ':[a-f0-9-]{36}$' : '$'));
   if (name === 'flowdocuments.files') return { _id: reference };
   if (name === 'flowdocuments.chunks') return { files_id: reference };
   return { $or: [{ _id: 'quota', _testRunId: runId }, { _id: reference }] };

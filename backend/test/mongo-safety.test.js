@@ -124,14 +124,20 @@ test('GridFS cleanup validates every file, chunk and quota owner before the firs
   db.data.set('flowdocuments.files', [{ _id: id }]);
   db.data.set('flowdocuments.chunks', [{ files_id: id }]);
   db.data.set('flowdocumentquota', [{ _id: 'quota', _testRunId: run }, { _id: key }]);
+  const legacy = 'payment-vouchers/1795229604395-123-' + run + '.pdf';
+  const owner = legacy + ':' + 'a'.repeat(36);
+  db.data.get('flowdocuments.files').push({ _id: owner });
+  db.data.get('flowdocuments.chunks').push({ files_id: owner });
+  db.data.get('flowdocumentquota').push({ _id: legacy });
   for (const [name, foreign] of [['flowdocuments.files', { _id: id.replace(run + '-proof', otherRun + '-proof') }],
-    ['flowdocuments.chunks', { files_id: 'foreign' }], ['flowdocumentquota', { _id: 'quota', _testRunId: otherRun }]]) {
+    ['flowdocuments.chunks', { files_id: 'foreign' }], ['flowdocuments.files', { _id: owner.replace(run + '.pdf', otherRun + '.pdf') }],
+    ['flowdocumentquota', { _id: legacy + '.unexpected' }], ['flowdocumentquota', { _id: 'quota', _testRunId: otherRun }]]) {
     db.data.get(name).push(foreign);
     await assert.rejects(cleanupTestRecords(db, lease));
     assert.equal(db.calls.length, 0);
     db.data.get(name).pop();
   }
-  assert.deepEqual(await cleanupTestRecords(db, lease), { 'flowdocuments.files': 1, 'flowdocuments.chunks': 1, flowdocumentquota: 2 });
+  assert.deepEqual(await cleanupTestRecords(db, lease), { 'flowdocuments.files': 2, 'flowdocuments.chunks': 2, flowdocumentquota: 3 });
 });
 
 test('all six finance test accounts have independently salted bcrypt passwords and ownership tags', async () => {

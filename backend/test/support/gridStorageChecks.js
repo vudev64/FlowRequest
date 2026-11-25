@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { createHash, randomUUID } from 'node:crypto';
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { configuredDocumentStorage } from '../../src/services/DocumentStorage.js';
 import { gridCharge, GRID_QUOTA, GRID_LEDGER, GRID_BUCKET } from '../../src/services/GridDocumentStorage.js';
@@ -129,5 +129,45 @@ export async function checkGridStorage({ t, app, db, storage, base, pay, purchas
       const budget = await ledger.findOne(counter);
       assert.equal(budget.active, 0); assert.equal(budget.bytes, 4 * charge);
     } finally { await grid.removeTemporary('uploads', file); }
+  });
+  await t.test('copy a local voucher without rewriting business history and serve its original URL from GridFS', async () => {
+    const snapshot = async () => {
+      const rows = {};
+      for (const name of ['requestpayments', 'requests', 'departments', 'auditlogs']) {
+        rows[name] = await db.collection(name).find({ _testRunId: storage.runId }).sort({ _id: 1 }).toArray();
+      }
+      return rows;
+    };
+    const before = await snapshot();
+    const payment = before.requestpayments.find(p => voucherURL.endsWith('/' + p._id + '/voucher'));
+    const request = before.requests.find(r => String(r._id) === String(payment.request));
+    assert.equal(request.status, 'APPROVED');
+    assert.equal(request.approvedAmount, request.paidAmount);
+    const key = payment.voucher.path.slice(1), filename = path.basename(key);
+    assert.match(key, new RegExp('^payment-vouchers/[0-9]{13}-[0-9]+-' + storage.runId + '\\.pdf$'));
+    const sourcePath = path.join(storage.root, 'private-vouchers', filename);
+    const source = await readFile(sourcePath);
+    assert.equal(hash(source), payment.voucher.sha256);
+
+    // A separate root ensures the API cannot silently serve the local original.
+    const reader = configuredDocumentStorage({ DEMO_STORAGE_ROOT: path.join(storage.root, 'empty-reader'), DEMO_STORAGE_DRIVER: 'gridfs' });
+    app.locals.documentStorage = reader;
+    try {
+      assert.equal((await fetch(voucherURL, { headers: auth(accountant) })).status, 404);
+      const file = { path: sourcePath, filename, size: source.length, mimetype: payment.voucher.mimeType };
+      await grid.grid.persist(key, file, payment.voucher.sha256);
+      const receipt = await ledger.findOne({ _id: key, state: 'pending' });
+      const digest = createHash('sha256');
+      for await (const chunk of grid.grid.bucket.openDownloadStream(receipt.owner)) digest.update(chunk);
+      assert.equal(digest.digest('hex'), payment.voucher.sha256);
+      await grid.grid.db.client.withSession(session => session.withTransaction(() => grid.grid.bind(key, file, session)));
+      const response = await fetch(voucherURL, { headers: auth(accountant) });
+      assert.equal(response.status, 200);
+      assert.deepEqual(Buffer.from(await response.arrayBuffer()), source);
+      assert.equal((await fetch(voucherURL, { headers: auth(employee) })).status, 403);
+      assert.equal(await files.countDocuments({ filename: key }), 1);
+      assert.deepEqual(await readFile(sourcePath), source);
+      assert.deepEqual(await snapshot(), before);
+    } finally { app.locals.documentStorage = grid; }
   });
 }
